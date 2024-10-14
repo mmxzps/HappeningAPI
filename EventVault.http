@@ -1,0 +1,6 @@
+@EventVault_HostAddress = http://localhost:5163
+
+GET {{EventVault_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
