@@ -17,37 +17,16 @@ namespace EventVault
             // Add services to the container.
 
             builder.Services.AddDbContext<EventVaultDbContext>( options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
-
-            // Controllers
-
-            builder.Services.AddControllers();
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Identity framework
 
             builder.Services.AddAuthorization();
 
             builder.Services.AddIdentityApiEndpoints<IdentityUser>()
-                .AddEntityFrameworkStores<EventVaultDbContext>();
-
-            // Swagger - Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-
-
-            // Services
-
-            builder.Services.AddScoped<IEventRepository, EventRepository>();
-            builder.Services.AddScoped<IEventServices, EventServices>();
-
+            .AddEntityFrameworkStores<EventVaultDbContext>();
 
             var app = builder.Build();
-
-            app.MapIdentityApi<IdentityUser>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -56,6 +35,8 @@ namespace EventVault
                 app.UseSwaggerUI();
             }
 
+            app.MapIdentityApi<IdentityUser>();
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
@@ -63,6 +44,21 @@ namespace EventVault
             app.MapControllers();
 
             app.Run();
+
+            // Controllers
+
+            builder.Services.AddControllers();
+
+            // Swagger - Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            // Services
+
+            builder.Services.AddScoped<IEventRepository, EventRepository>();
+            builder.Services.AddScoped<IEventServices, EventServices>();
+
         }
     }
 }

@@ -13,16 +13,27 @@ namespace EventVault.Services.IServices
             _eventRepository = eventRepository;
         }
 
-        public async Task<IEnumerable<EventGetDTO>> GetEventsAsync (int userId)
+        public async Task<IEnumerable<EventGetDTO>> GetAllEventsAsync ()
         {
-            var eventsList = await _eventRepository.GetEventsAsync(userId);
+            var eventsList = await _eventRepository.GetAllEventsAsync();
 
             var eventDTOsList = eventsList.Select(e => new EventGetDTO
             {
+                //Add necessary data for eventGetDTO
 
             }).ToList();
 
             return eventDTOsList;
+        }
+
+        public async Task<bool> AddEventToDbAsync(EventCreateDTO eventDTO)
+        {
+            Event eventToAdd = new Event
+            {
+                //add necessary data for Eventobject
+            };
+
+            return await _eventRepository.AddEventToDbAsync(eventToAdd);
         }
     }
 }

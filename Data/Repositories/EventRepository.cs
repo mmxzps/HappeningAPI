@@ -1,5 +1,6 @@
 ﻿using EventVault.Data.Repositories.IRepositories;
 using EventVault.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventVault.Data.Repositories
 {
@@ -13,13 +14,28 @@ namespace EventVault.Data.Repositories
         
         }
 
-        public async Task<IEnumerable<Event>> GetEventsAsync (int userId)
+        public async Task<IEnumerable<Event>> GetAllEventsAsync ()
         {
-            //var eventList = await _context.Events(E => E.FK_UserId == userId).ToList() ?? new List<Event>();
+            var eventList = await _context.Events.ToListAsync() ?? new List<Event>();
 
-            var eventsList = new List<Event>();
+            return eventList;
+        }
 
-            return eventsList;
+        public async Task<bool> AddEventToDbAsync(Event eventToAdd)
+        {
+            try
+            {
+                await _context.Events.AddAsync(eventToAdd);
+
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
     }

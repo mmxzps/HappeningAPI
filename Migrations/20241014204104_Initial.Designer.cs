@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventVault.Migrations
 {
     [DbContext(typeof(EventVaultDbContext))]
-    [Migration("20241014004645_Init")]
-    partial class Init
+    [Migration("20241014204104_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

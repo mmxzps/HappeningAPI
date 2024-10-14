@@ -13,7 +13,7 @@ namespace EventVault.Data
 
         //DbSets
 
-        DbSet<Event> Events { get; set; }
+        public DbSet<Event> Events { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
