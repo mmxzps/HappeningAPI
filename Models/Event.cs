@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventVault.Models
 {
-    public class Event : Controller
+    public class Event
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        [Key]
+        public int Id { get; set; }
     }
 }

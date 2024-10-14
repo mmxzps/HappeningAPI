@@ -15,7 +15,7 @@ namespace EventVault.Data.Repositories
 
         public async Task<IEnumerable<Event>> GetEventsAsync (int userId)
         {
-            //var eventList = await _context.Events(E => E.FK_UserId == userId).ToList();
+            //var eventList = await _context.Events(E => E.FK_UserId == userId).ToList() ?? new List<Event>();
 
             var eventsList = new List<Event>();
 

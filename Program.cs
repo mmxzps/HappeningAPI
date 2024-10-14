@@ -21,6 +21,10 @@ namespace EventVault
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            // Controllers
+
+            builder.Services.AddControllers();
+
             // Identity framework
 
             builder.Services.AddAuthorization();
@@ -28,12 +32,8 @@ namespace EventVault
             builder.Services.AddIdentityApiEndpoints<IdentityUser>()
                 .AddEntityFrameworkStores<EventVaultDbContext>();
 
-            // Controllers
-
-            builder.Services.AddControllers();
-            
             // Swagger - Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -59,7 +59,6 @@ namespace EventVault
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 

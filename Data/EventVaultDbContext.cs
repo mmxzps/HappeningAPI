@@ -7,7 +7,7 @@ namespace EventVault.Data
 {
     public class EventVaultDbContext : IdentityDbContext<IdentityUser>
     {
-        public EventVaultDbContext(DbContextOptions options) : base(options)
+        public EventVaultDbContext(DbContextOptions<EventVaultDbContext> options) : base(options)
         {
         }
 
