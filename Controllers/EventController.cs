@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EventVault.Controllers
 {
+    [ApiController]
     [Route("[Controller]")]
     public class EventController : Controller
     {

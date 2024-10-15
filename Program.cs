@@ -26,6 +26,23 @@ namespace EventVault
             builder.Services.AddIdentityApiEndpoints<IdentityUser>()
             .AddEntityFrameworkStores<EventVaultDbContext>();
 
+            builder.Services.AddControllers();
+
+
+            // Controllers
+
+            builder.Services.AddControllers();
+
+            // Swagger - Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            // Services
+
+            builder.Services.AddScoped<IEventRepository, EventRepository>();
+            builder.Services.AddScoped<IEventServices, EventServices>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -45,19 +62,6 @@ namespace EventVault
 
             app.Run();
 
-            // Controllers
-
-            builder.Services.AddControllers();
-
-            // Swagger - Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            // Services
-
-            builder.Services.AddScoped<IEventRepository, EventRepository>();
-            builder.Services.AddScoped<IEventServices, EventServices>();
 
         }
     }
