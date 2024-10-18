@@ -2,6 +2,7 @@
 using EventVault.Models.DTOs;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventVault.Controllers
@@ -33,6 +34,12 @@ namespace EventVault.Controllers
                 return NotFound("No events in database.");
             }
 
+        }
+
+        [HttpGet("{city}")]
+        public async Task<IActionResult> GetEventsInCity(string city)
+        {
+            return Ok();
         }
 
         //[Authorize(Roles = "Admin")]
