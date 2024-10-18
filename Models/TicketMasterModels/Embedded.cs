@@ -5,7 +5,7 @@ namespace TicketmasterTesting.Models.TicketMasterModels
     public class Embedded
     {
         [JsonPropertyName("events")]
-        public List<Event> Events { get; set; }
+        public List<EventTM> Events { get; set; }
 
         [JsonPropertyName("venues")]
         public List<Venue> Venues { get; set; }

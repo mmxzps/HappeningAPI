@@ -2,7 +2,7 @@
 
 namespace TicketmasterTesting.Models.TicketMasterModels
 {
-    public class Event
+    public class EventTM
     {
         [JsonPropertyName("name")]
         public string Name { get; set; }
