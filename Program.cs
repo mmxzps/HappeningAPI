@@ -38,8 +38,11 @@ namespace EventVault
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Services
+            //Added configuration to read key from appsetting
+            builder.Configuration.AddJsonFile("appsettings.Development.json", false, reloadOnChange: true);
 
+            // Services
+            builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
 
