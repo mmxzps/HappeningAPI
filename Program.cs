@@ -9,6 +9,7 @@ using EventVault.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace EventVault
 {
@@ -29,7 +30,8 @@ namespace EventVault
 
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<EventVaultDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddDefaultUI();
 
             // JWT Authentication
             var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
@@ -64,6 +66,20 @@ namespace EventVault
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
             builder.Services.AddHttpClient<IEventbriteServices, EventbriteServices>();
+
+            var smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER");
+            var smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT"));
+            var smtpUser = Environment.GetEnvironmentVariable("SMTP_USER");
+            var smtpPass = Environment.GetEnvironmentVariable("SMTP_PASS");
+
+            builder.Services.AddTransient<IEmailSender, EmailSender>(i =>
+               new EmailSender(
+                   smtpServer,
+                   smtpPort,
+                   smtpUser,
+                   smtpPass
+               )
+            );
 
             var app = builder.Build();
 
