@@ -1,30 +1,34 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+﻿using EventVault.Services.IServices;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-public class EventbriteService
+namespace EventVault.Controllers
 {
-    private readonly HttpClient _httpClient;
-
-    public EventbriteService(HttpClient httpClient)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class EventbriteController : ControllerBase
     {
-        _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri("https://www.eventbriteapi.com/v3/");
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "YOUR_PRIVATE_TOKEN");
-    }
+        private readonly IEventbriteServices _eventbriteServices;
 
-    public async Task<string> GetAllEventsAsync()
-    {
-        var response = await _httpClient.GetAsync("events/search/");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
-    }
+        public EventbriteController(IEventbriteServices eventbriteServices)
+        {
+            _eventbriteServices = eventbriteServices;
+        }
 
-    public async Task<string> GetEventByIdAsync(string eventId)
-    {
-        var response = await _httpClient.GetAsync($"events/{eventId}/");
-        response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
+        [HttpGet]
+        [Route("/getEventsByEventbrite")]
+        public async Task<IActionResult> GetAllEvents(int page = 1, int pageSize = 10)
+        {
+            var events = await _eventbriteServices.GetAllEventsAsync(page, pageSize);
+            return Ok(events);
+        }
+
+        [HttpGet]
+        [Route("/getEventsByEventbrite/{eventId}")]
+        public async Task<IActionResult> GetEventById(string eventId)
+        {
+            var eventDetail = await _eventbriteServices.GetEventByIdAsync(eventId);
+            return Ok(eventDetail);
+        }
     }
 }
-

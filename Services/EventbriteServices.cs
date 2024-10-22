@@ -17,7 +17,7 @@ public class EventbriteServices : IEventbriteServices
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("EVENTBRITE_PRIVATE_TOKEN"));
     }
 
-    public async Task<PaginatedResponse<Event>> GetAllEventsAsync(int page = 1)
+    public async Task<PaginatedResponse<Event>> GetAllEventsAsync(int page = 1, int pageSize = 10)
     {
         var response = await _httpClient.GetAsync($"events/search/?page={page}");
         response.EnsureSuccessStatusCode();
