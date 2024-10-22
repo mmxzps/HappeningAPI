@@ -19,7 +19,7 @@ public class EventbriteServices : IEventbriteServices
 
     public async Task<PaginatedResponse<Event>> GetAllEventsAsync(int page = 1, int pageSize = 10)
     {
-        var response = await _httpClient.GetAsync($"events/search/?page={page}");
+        var response = await _httpClient.GetAsync($"events/search/?page={page}&page_size={pageSize}");
         response.EnsureSuccessStatusCode();
 
         var jsonString = await response.Content.ReadAsStringAsync();
