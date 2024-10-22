@@ -1,6 +1,9 @@
-﻿using EventVault.Services.IServices;
+﻿using EventVault.Models.Eventbrite;
+using EventVault.Models;
+using EventVault.Services.IServices;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 public class EventbriteServices : IEventbriteServices
@@ -14,17 +17,29 @@ public class EventbriteServices : IEventbriteServices
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("EVENTBRITE_PRIVATE_TOKEN"));
     }
 
-    public async Task<string> GetEventsAsync()
+    public async Task<PaginatedResponse<Event>> GetAllEventsAsync(int page = 1)
     {
-        var response = await _httpClient.GetAsync("events/search/");
+        var response = await _httpClient.GetAsync($"events/search/?page={page}");
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
+
+        var jsonString = await response.Content.ReadAsStringAsync();
+        var events = JsonSerializer.Deserialize<PaginatedResponse<Event>>(jsonString, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+        return events;
     }
 
-    public async Task<string> GetEventByIdAsync(string eventId)
+    public async Task<Event> GetEventByIdAsync(string eventId)
     {
         var response = await _httpClient.GetAsync($"events/{eventId}/");
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync();
+
+        var jsonString = await response.Content.ReadAsStringAsync();
+        var eventDetail = JsonSerializer.Deserialize<Event>(jsonString, new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+        return eventDetail;
     }
 }
