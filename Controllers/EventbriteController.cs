@@ -1,4 +1,5 @@
 ﻿using EventVault.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +17,7 @@ namespace EventVault.Controllers
         }
 
         [HttpGet]
-        [Route("/getEventsByEventbrite")]
+        [Route("getEventsByEventbrite")]
         public async Task<IActionResult> GetAllEvents(int page = 1, int pageSize = 10)
         {
             var events = await _eventbriteServices.GetAllEventsAsync(page, pageSize);
@@ -24,7 +25,7 @@ namespace EventVault.Controllers
         }
 
         [HttpGet]
-        [Route("/getEventsByEventbrite/{eventId}")]
+        [Route("getEventsByEventbrite/{eventId}")]
         public async Task<IActionResult> GetEventById(string eventId)
         {
             var eventDetail = await _eventbriteServices.GetEventByIdAsync(eventId);
