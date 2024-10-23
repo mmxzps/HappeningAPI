@@ -4,7 +4,7 @@ namespace EventVault.Services.IServices
 {
     public interface IKBEventServices
     {
-        Task<KBEventViewModel> GetEventDataAsync(int eventId);
+        Task<List<KBEventViewModel>> GetEventDataAsync();
 
         Task<IEnumerable<KBEventListViewModel>> GetListOfEventsAsync();
     }

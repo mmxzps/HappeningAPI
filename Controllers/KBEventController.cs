@@ -27,9 +27,9 @@ namespace EventVault.Controllers
 
         [HttpGet]
         [Route("/getEvent")]
-        public async Task<ActionResult<KBEventViewModel>> GetEvent(int id)
+        public async Task<ActionResult<KBEventViewModel>> GetEvent()
         {
-            var eventObject = await _services.GetEventDataAsync(id);
+            var eventObject = await _services.GetEventDataAsync();
 
             return Ok(eventObject);
         }

@@ -5,7 +5,7 @@ public class KBEventViewModel
 {
     public string title { get; set; }
     public string presentation_short { get; set; }
-    public string presentation_long { get; set; }
+   // public string presentation_long { get; set; }
     public long unixtime_release { get; set; }
     public decimal price_min { get; set; }
     public decimal price_max { get; set; }
@@ -28,8 +28,8 @@ public class Organizer
 
 public class EventDate
 {
-    public int date_id { get; set; }
-    public int location_id { get; set; }
+   // public int date_id { get; set; }
+   // public int location_id { get; set; }
     public long unixtime_open { get; set; }
     public long unixtime_start { get; set; }
     public int ticket_amount { get; set; }
@@ -40,7 +40,7 @@ public class EventDate
 
 public class Location
 {
-    public int location_id { get; set; }
+   // public int location_id { get; set; }
     public string name { get; set; }
     public string street { get; set; }
     public string vicinity { get; set; }
