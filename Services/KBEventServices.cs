@@ -16,7 +16,7 @@ namespace EventVault.Services
             _httpClient = httpClient;
         }
 
-        readonly string apiKey = "3e8ae9178d8c9176ba161a4f36acea43";
+        readonly string apiKey = "";
 
         public async Task<List<KBEventViewModel>> GetEventDataAsync()
         {
