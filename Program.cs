@@ -18,7 +18,7 @@ namespace EventVault
             // Add services to the container.
 
             builder.Services.AddDbContext<EventVaultDbContext>( options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 
             // Identity framework
 
@@ -39,8 +39,11 @@ namespace EventVault
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Services
+            //Added configuration to read key from appsetting
+            builder.Configuration.AddJsonFile("appsettings.Development.json", false, reloadOnChange: true);
 
+            // Services
+            builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
             builder.Services.AddScoped<IKBEventServices, KBEventServices>();
