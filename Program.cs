@@ -1,7 +1,9 @@
 
+using EventVault.Controllers;
 using EventVault.Data;
 using EventVault.Data.Repositories;
 using EventVault.Data.Repositories.IRepositories;
+using EventVault.Services;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +44,7 @@ namespace EventVault
 
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
+            builder.Services.AddScoped<IVisitStockholmServices, VisitStockholmServices>();
 
             var app = builder.Build();
 

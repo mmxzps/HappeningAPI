@@ -35,5 +35,19 @@ namespace EventVault.Services.IServices
 
             return await _eventRepository.AddEventToDbAsync(eventToAdd);
         }
+
+        public async Task<List<Event>> CreateEventDTO(IEnumerable<VisitStockholmEventResponse> eventResponse)
+        {
+            List<Event> EventsFromAPI = new List<Event>();
+
+            foreach (VisitStockholmEventResponse VSevent in eventResponse)
+            {
+                EventsFromAPI.Add(new Event {
+
+            });
+            }
+
+            return EventsFromAPI;
+        } 
     }
 }
