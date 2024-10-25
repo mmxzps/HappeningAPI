@@ -46,7 +46,8 @@ namespace EventVault.Controllers
 
             if (await _authServices.Login(loginDTO))
             {
-                return Ok();
+                var tokenString = _authServices.GenerateToken(loginDTO);
+                return Ok(tokenString);
             }
 
             return BadRequest();

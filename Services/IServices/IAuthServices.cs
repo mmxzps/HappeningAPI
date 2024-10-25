@@ -6,6 +6,7 @@ namespace EventVault.Services.IServices
 {
     public interface IAuthServices
     {
+        Task<string> GenerateToken(LoginDTO loginDTO);
         Task<bool> Login(LoginDTO loginDTO);
         Task<IdentityResult> Register(RegisterDTO registerDTO);
     }
