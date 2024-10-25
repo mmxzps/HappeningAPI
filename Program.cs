@@ -23,7 +23,7 @@ namespace EventVault
 
             // Add services to the container.
             builder.Services.AddDbContext<EventVaultDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 
             // Identity framework
             builder.Services.AddAuthorization();
