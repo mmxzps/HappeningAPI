@@ -11,12 +11,12 @@ namespace EventVault.Data.Repositories
         private readonly EventVaultDbContext _context;
         private readonly HttpClient _httpClient;
         private readonly string _ticketMasterApiKey;
-        public EventRepository(EventVaultDbContext context, HttpClient httpClient, IConfiguration configuration)
+        public EventRepository(EventVaultDbContext context, HttpClient httpClient)
         {
 
             _context = context;
             _httpClient = httpClient;
-            _ticketMasterApiKey = configuration["Ticketmaster:ApiKey"];
+            _ticketMasterApiKey = Environment.GetEnvironmentVariable("TicketmasterApiKey");
         }
 
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
