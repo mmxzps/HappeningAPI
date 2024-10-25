@@ -36,18 +36,28 @@ namespace EventVault.Services.IServices
             return await _eventRepository.AddEventToDbAsync(eventToAdd);
         }
 
-        public async Task<List<Event>> CreateEventDTO(IEnumerable<VisitStockholmEventResponse> eventResponse)
+        public async Task<List<ShowEventDTO>> GetEventInCityAsync(string city)
         {
-            List<Event> EventsFromAPI = new List<Event>();
+            var eventHolder = await _eventRepository.GetEventInCityAsync(city);
 
-            foreach (VisitStockholmEventResponse VSevent in eventResponse)
+            var dto = eventHolder.Embedded.Events.Select(x => new ShowEventDTO
             {
-                EventsFromAPI.Add(new Event {
-
+                EventName = x.Name,
+                EventDate = x.Dates.Start.DateTime,
+                ImageUrl = x.Images.FirstOrDefault(x => x.Ratio == "3_2").Url,
+                TicketPurchaseUrl = x.Url,
+                VenueName = x.Embedded?.Venues.FirstOrDefault()?.Name,
+                City = x.Embedded.Venues.FirstOrDefault().City.Name,
+                Address = x.Embedded?.Venues.FirstOrDefault()?.Address.Line1,
+                MinPrice = x.PriceRanges.FirstOrDefault().Min,
+                MaxPrice = x.PriceRanges.FirstOrDefault().Max,
+                Currency = x.PriceRanges.FirstOrDefault().Currency,
+                Category = x.Classifications.FirstOrDefault().Genre.Name,
+                SubCategory = x.Classifications.FirstOrDefault().SubGenre.Name,
+                AvailabilityStatus = x.Dates.Status.Code,
             });
-            }
 
-            return EventsFromAPI;
-        } 
+            return dto.ToList();
+        }
     }
 }

@@ -2,6 +2,7 @@
 using EventVault.Models.DTOs;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventVault.Controllers
@@ -23,7 +24,8 @@ namespace EventVault.Controllers
         {
             var events = await _eventServices.GetAllEventsAsync();
 
-            if (events != null) {
+            if (events != null)
+            {
 
                 return Ok(events);
             }
@@ -35,14 +37,29 @@ namespace EventVault.Controllers
 
         }
 
+        [HttpGet("{city}")]
+        public async Task<IActionResult> GetEventsInCity(string city)
+        {
+            try
+            {
+                var eventt = await _eventServices.GetEventInCityAsync(city);
+                return Ok(eventt);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         //[Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddEventToDb(EventCreateDTO eventCreateDTO)
         {
-            var eventToAdd = new Event {
+            var eventToAdd = new Event
+            {
 
                 //add whatever is requred in eventobject contains.
-            
+
             };
 
             var isSuccessfull = await _eventServices.AddEventToDbAsync(eventCreateDTO);
