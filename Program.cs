@@ -66,6 +66,7 @@ namespace EventVault
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
             builder.Services.AddHttpClient<IEventbriteServices, EventbriteServices>();
+            builder.Services.AddTransient<IAuthServices, AuthServices>();
 
             var smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER");
             var smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT"));
