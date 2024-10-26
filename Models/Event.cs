@@ -9,30 +9,30 @@ namespace EventVault.Models
         [Key]
         public int Id { get; set; }
 
-        string Title;
+        public string Title { get; set; }
 
-        String Description;
+        public String Description { get; set; }
 
+        [ForeignKey("Venue")]
+        public int FK_Venue;
+
+        public Venue Venue { get; set; }
 
         //if event runs several dates
+        public List<DateTime> Dates = new List<DateTime>();
 
-        List<DateTime> Dates;
+        public bool requiresTickets { get; set; }
 
-        bool requiresTickets;
-
-        bool ticketsAreAvaliable;
+        public bool ticketsAreAvaliable { get; set; }
 
         //for pricerange
 
-        Decimal HighestPrice;
+        public Decimal HighestPrice { get; set; }
 
-        Decimal LowestPrice;
+        public Decimal LowestPrice { get; set; }
 
-        String EventUrlPage;
+        public String EventUrlPage { get; set; }
 
-        [ForeignKey("Venue")]
-        int FK_Venue;
 
-        Venue Venue;
     }
 }

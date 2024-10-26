@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
+[NotMapped]
 public class VisitStockholmEventResponse
 {
     [JsonPropertyName("count")]
     public int Count { get; set; }
 
     [JsonPropertyName("meta")]
-    public Meta Meta { get; set; }
+    public VSMeta Meta { get; set; }
 
     [JsonPropertyName("next")]
     public string Next { get; set; }
@@ -20,13 +22,15 @@ public class VisitStockholmEventResponse
     public List<Event> Results { get; set; }
 }
 
-public class Meta
+[NotMapped]
+public class VSMeta
 {
     [JsonPropertyName("categories")]
-    public List<Category> Categories { get; set; }
+    public List<VSCategory> Categories { get; set; }
 }
 
-public class Category
+[NotMapped]
+public class VSCategory
 {
     [JsonPropertyName("slug")]
     public string Slug { get; set; }
@@ -35,16 +39,17 @@ public class Category
     public string Title { get; set; }
 }
 
+[NotMapped]
 public class Event
 {
     [JsonPropertyName("id")]
     public string Id { get; set; }
 
     [JsonPropertyName("title")]
-    public Title Title { get; set; }
+    public VSTitle Title { get; set; }
 
     [JsonPropertyName("description")]
-    public Description Description { get; set; }
+    public VSDescription Description { get; set; }
 
     [JsonPropertyName("external_website_url")]
     public string ExternalWebsiteUrl { get; set; }
@@ -68,7 +73,7 @@ public class Event
     public string City { get; set; }
 
     [JsonPropertyName("location")]
-    public Location Location { get; set; }
+    public VSLocation Location { get; set; }
 
     [JsonPropertyName("created_at")]
     public DateTime CreatedAt { get; set; }
@@ -92,16 +97,17 @@ public class Event
     public string EndTime { get; set; }
 
     [JsonPropertyName("categories")]
-    public List<Category> EventCategories { get; set; }
+    public List<VSCategory> EventCategories { get; set; }
 
     [JsonPropertyName("featured_image")]
-    public FeaturedImage FeaturedImage { get; set; }
+    public VSFeaturedImage FeaturedImage { get; set; }
 
     [JsonPropertyName("closest_station")]
     public string ClosestStation { get; set; }
 }
 
-public class Title
+[NotMapped]
+public class VSTitle
 {
     [JsonPropertyName("en")]
     public string En { get; set; }
@@ -110,7 +116,8 @@ public class Title
     public string Sv { get; set; }
 }
 
-public class Description
+[NotMapped]
+public class VSDescription
 {
     [JsonPropertyName("en")]
     public string En { get; set; }
@@ -119,7 +126,8 @@ public class Description
     public string Sv { get; set; }
 }
 
-public class Location
+[NotMapped]
+public class VSLocation
 {
     [JsonPropertyName("latitude")]
     public double Latitude { get; set; }
@@ -128,22 +136,24 @@ public class Location
     public double Longitude { get; set; }
 }
 
-public class FeaturedImage
+[NotMapped]
+public class VSFeaturedImage
 {
     [JsonPropertyName("title")]
-    public Title Title { get; set; }
+    public VSTitle Title { get; set; }
 
     [JsonPropertyName("alt")]
-    public Alt Alt { get; set; }
+    public VSAlt Alt { get; set; }
 
     [JsonPropertyName("caption")]
-    public Caption Caption { get; set; }
+    public VSCaption Caption { get; set; }
 
     [JsonPropertyName("url")]
     public string Url { get; set; }
 }
 
-public class Alt
+[NotMapped]
+public class VSAlt
 {
     [JsonPropertyName("en")]
     public string En { get; set; }
@@ -152,7 +162,8 @@ public class Alt
     public string Sv { get; set; }
 }
 
-public class Caption
+[NotMapped]
+public class VSCaption
 {
     [JsonPropertyName("en")]
     public string En { get; set; }
