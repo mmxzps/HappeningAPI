@@ -14,10 +14,12 @@ namespace EventVault.Models
         public List<Event> EventsAtVenue = new List<Event>();
 
         public string Name { get; set; }
+        public string Address { get; set; }
 
-        public string Street { get; set; }
-
+        public string zipCode { get; set; }
         public string City { get; set; }
+        public string LocationLat { get; set; }
+        public string LocationLong { get; set; }
 
     }
 }

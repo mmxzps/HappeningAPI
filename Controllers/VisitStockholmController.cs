@@ -1,4 +1,5 @@
-﻿using EventVault.Services.IServices;
+﻿using EventVault.Models.DTOs;
+using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventVault.Controllers
@@ -16,11 +17,9 @@ namespace EventVault.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Event>> GetEvents()
+        public async Task<IEnumerable<EventGetDTO>> GetEvents()
         {
             var results = await _visitStockholmServices.GetResponse($"{_baseUrl} eventdates /? date_from = &date_to = &one_time = true & categories = music");
-
-
 
             return results;
         }
