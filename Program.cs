@@ -15,7 +15,7 @@ namespace EventVault
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             Env.Load();
 
@@ -67,6 +67,7 @@ namespace EventVault
             builder.Services.AddScoped<IEventServices, EventServices>();
             builder.Services.AddHttpClient<IEventbriteServices, EventbriteServices>();
             builder.Services.AddTransient<IAuthServices, AuthServices>();
+            builder.Services.AddTransient<IRoleServices, RoleServices>();
 
             var smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER");
             var smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT"));
@@ -83,6 +84,12 @@ namespace EventVault
             );
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleService = scope.ServiceProvider.GetRequiredService<IRoleServices>();
+                await roleService.InitalizeRolesAsync();
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

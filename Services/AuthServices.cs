@@ -49,6 +49,11 @@ namespace EventVault.Services
             return await _userManager.CheckPasswordAsync(identityUser, loginDTO.Password);
         }
 
+        public async Task<IdentityUser> GetUserByUsernameAsync(string username)
+        {
+            return await _userManager.FindByNameAsync(username);
+        }
+
         public async Task<string> GenerateToken(LoginDTO loginDTO)
         {
             IEnumerable<Claim> claims = new List<Claim> { 

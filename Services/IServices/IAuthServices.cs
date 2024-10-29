@@ -9,5 +9,6 @@ namespace EventVault.Services.IServices
         Task<string> GenerateToken(LoginDTO loginDTO);
         Task<bool> Login(LoginDTO loginDTO);
         Task<IdentityResult> Register(RegisterDTO registerDTO);
+        Task<IdentityUser> GetUserByUsernameAsync(string username);
     }
 }
