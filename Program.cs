@@ -32,7 +32,6 @@ namespace EventVault
             builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
             builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-
             // Identity framework
             builder.Services.AddAuthorization();
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
