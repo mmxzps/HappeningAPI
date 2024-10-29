@@ -49,20 +49,21 @@ namespace EventVault.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(LoginDTO loginDTO)
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (await _authServices.Login(loginDTO))
+            var user = await _authServices.GetUserByUsernameAsync(loginDTO.UserName);
+            if (user == null || !await _authServices.Login(loginDTO))
             {
-                var tokenString = _authServices.GenerateToken(loginDTO);
-                return Ok(tokenString);
+                return BadRequest("Invalid username or password.");
             }
 
-            return BadRequest();
+            var tokenString = await _authServices.GenerateToken(user);
+            return Ok(tokenString);
         }
 
         [HttpPost]

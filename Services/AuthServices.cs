@@ -54,26 +54,44 @@ namespace EventVault.Services
             return await _userManager.FindByNameAsync(username);
         }
 
-        public async Task<string> GenerateToken(LoginDTO loginDTO)
+        public async Task<string> GenerateToken(IdentityUser user)
         {
-            IEnumerable<Claim> claims = new List<Claim> { 
-            new Claim(ClaimTypes.Name, loginDTO.UserName),
-            new Claim(ClaimTypes.Role, "User"),
+            var claims = new List<Claim>
+            {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Email, user.Email)
             };
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT_KEY").Value));
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
-            SigningCredentials signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT_KEY"]));
+            if (securityKey == null)
+            {
+                throw new ArgumentNullException("JWT key cannot be null.");
+            }
 
-            var securityToken = new JwtSecurityToken
-                (claims:claims, 
+            var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+            var issuer = _configuration["JWT_ISSUER"];
+            var audience = _configuration["JWT_AUDIENCE"];
+
+            if (string.IsNullOrEmpty(issuer) || string.IsNullOrEmpty(audience))
+            {
+                throw new ArgumentNullException("Issuer or Audience is null or empty.");
+            }
+
+            var securityToken = new JwtSecurityToken(
+                claims: claims,
                 expires: DateTime.Now.AddMinutes(60),
-                issuer: _configuration.GetSection("JWT_ISSUER").Value,
-                audience: _configuration.GetSection("JWT_AUDIENCE").Value,
-                signingCredentials:signingCred);
+                issuer: issuer,
+                audience: audience,
+                signingCredentials: signingCred
+            );
 
-            string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
-            return tokenString;
+            return new JwtSecurityTokenHandler().WriteToken(securityToken);
         }
     }
 }
