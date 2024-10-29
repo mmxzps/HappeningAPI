@@ -1,52 +1,37 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using System.Net;
-using System.Net.Mail;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using EventVault.Models;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 
 public class EmailSender : IEmailSender
 {
-    public string SmtpServer { get; }
-    public int SmtpPort { get; }
-    public string SmtpUser { get; }
-    public string SmtpPass { get; }
+    private readonly SmtpSettings _smtpSettings;
 
-    public EmailSender(string smtpServer, int smtpPort, string smtpUser, string smtpPass)
+    public EmailSender(IOptions<SmtpSettings> smtpSettings)
     {
-        SmtpServer = smtpServer;
-        SmtpPort = smtpPort;
-        SmtpUser = smtpUser;
-        SmtpPass = smtpPass;
+        _smtpSettings = smtpSettings.Value;
     }
 
-    public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+    public async Task SendEmailAsync(string email, string subject, string message)
     {
-        var mailMessage = new MailMessage
+        var emailMessage = new MimeMessage();
+        emailMessage.From.Add(new MailboxAddress("EventVault", "eventvault123@gmail.com"));
+        emailMessage.To.Add(new MailboxAddress("", email));
+        emailMessage.Subject = subject;
+        emailMessage.Body = new TextPart("html") { Text = message };
+
+        using (var client = new SmtpClient())
         {
-            From = new MailAddress(SmtpUser),
-            Subject = subject,
-            Body = htmlMessage,
-            IsBodyHtml = true,
-        };
+            await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
 
-        mailMessage.To.Add(email);
+            await client.AuthenticateAsync("eventvault123@gmail.com", "EventVault123!?");
 
-        using (var client = new SmtpClient(SmtpServer, SmtpPort))
-        {
-            client.Credentials = new NetworkCredential(SmtpUser, SmtpPass);
-            client.EnableSsl = true;
-
-            try
-            {
-                await client.SendMailAsync(mailMessage);
-            }
-            catch (SmtpException smtpEx)
-            {
-                throw new Exception($"Email could not be sent. SMTP Exception: {smtpEx.Message}", smtpEx);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Email could not be sent. Exception: {ex.Message}", ex);
-            }
+            await client.SendAsync(emailMessage);
+            await client.DisconnectAsync(true);
         }
     }
 }

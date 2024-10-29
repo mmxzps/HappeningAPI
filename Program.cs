@@ -4,13 +4,15 @@ using EventVault.Data.Repositories.IRepositories;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using DotNetEnv;
-using EventVault.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using DotNetEnv;
+using EventVault.Models;
+using EventVault.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace EventVault
 {
@@ -26,13 +28,16 @@ namespace EventVault
             builder.Services.AddDbContext<EventVaultDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 
+            // Configure SMTP settings
+            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+
             // Identity framework
             builder.Services.AddAuthorization();
-
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<EventVaultDbContext>()
-            .AddDefaultTokenProviders()
-            .AddDefaultUI();
+                .AddEntityFrameworkStores<EventVaultDbContext>()
+                .AddDefaultTokenProviders();
 
             // JWT Authentication
             var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
@@ -63,23 +68,13 @@ namespace EventVault
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Services & repos
+            // Services & repositories
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
             builder.Services.AddHttpClient<IEventbriteServices, EventbriteServices>();
             builder.Services.AddTransient<IAuthServices, AuthServices>();
             builder.Services.AddTransient<IRoleServices, RoleServices>();
             builder.Services.AddTransient<IAdminServices, AdminServices>();
-
-            var smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER");
-            var smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT"));
-            var smtpUser = Environment.GetEnvironmentVariable("SMTP_USER");
-            var smtpPass = Environment.GetEnvironmentVariable("SMTP_PASS");
-
-            await Console.Out.WriteLineAsync($"SMTP Configuration: Server={smtpServer}, Port={smtpPort}, User={smtpUser}, Pass={smtpPass}");
-
-            builder.Services.AddTransient<IEmailSender>(provider =>
-                new EmailSender(smtpServer, smtpPort, smtpUser, smtpPass));
 
             var app = builder.Build();
 
@@ -96,16 +91,13 @@ namespace EventVault
                 app.UseSwaggerUI();
             }
 
-            app.MapIdentityApi<IdentityUser>();
-
             app.UseHttpsRedirection();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();
         }
     }
 }
+
