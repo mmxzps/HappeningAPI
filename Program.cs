@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EventVault
 {
@@ -75,14 +76,10 @@ namespace EventVault
             var smtpUser = Environment.GetEnvironmentVariable("SMTP_USER");
             var smtpPass = Environment.GetEnvironmentVariable("SMTP_PASS");
 
-            builder.Services.AddTransient<IEmailSender, EmailSender>(i =>
-               new EmailSender(
-                   smtpServer,
-                   smtpPort,
-                   smtpUser,
-                   smtpPass
-               )
-            );
+            await Console.Out.WriteLineAsync($"SMTP Configuration: Server={smtpServer}, Port={smtpPort}, User={smtpUser}, Pass={smtpPass}");
+
+            builder.Services.AddTransient<IEmailSender>(provider =>
+                new EmailSender(smtpServer, smtpPort, smtpUser, smtpPass));
 
             var app = builder.Build();
 

@@ -1,23 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace EventVault.Models
 {
     public class Venue
     {
         [Key]
-        int Id;
+        public int Id { get; set; }
 
         [ForeignKey("Restaurant")]
-        List<int>EventId = new List<int>();
+        public List<int> EventId { get; set; } = new List<int>();
 
-        List<Event> EventsAtVenue = new List<Event>();
+        public List<Event> EventsAtVenue { get; set; } = new List<Event>();
 
-        string Name;
+        public string Name { get; set; }
 
-        string Street;
+        public string Street { get; set; }
 
-        string City;
-
+        public string City { get; set; }
     }
 }
