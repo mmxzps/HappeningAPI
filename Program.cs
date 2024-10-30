@@ -29,6 +29,7 @@ namespace EventVault
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 
             // Configure SMTP settings
+            // (The correct one) :)
             builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
             builder.Services.AddTransient<IEmailSender, EmailSender>();
 
