@@ -19,10 +19,12 @@ namespace EventVault.Models
         public Venue Venue { get; set; }
         
         //if event runs several dates
-        public List<DateTime> Dates = new List<DateTime>();
+        public List<Date> Dates = new List<Date>();
 
-        public DateTime startDate { get; set; }
-        public DateTime endDate { get; set; }
+        //releasedate for ticketavaliability
+        public DateTime ticketsRelease {  get; set; }
+
+
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public bool requiresTickets { get; set; }

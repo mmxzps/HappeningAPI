@@ -15,16 +15,8 @@ namespace EventVault.Models.DTOs
         public string EventUrlPage { get; set; }
 
         //if event runs several dates
-        public List<DateTime> Dates = new List<DateTime>();
-
-        public DateTime StartDate { get; set; }
-
-        public DateTime EndDate { get; set; }
-
-        public TimeSpan StartTime { get; set; }
-
-        public TimeSpan EndTime { get; set; }
-
+        public List<Date> Dates = new List<Date>();
+        public DateTime ticketsRelease { get; set; }
         public bool requiresTickets { get; set; }
         public bool ticketsAreAvaliable { get; set; }
 

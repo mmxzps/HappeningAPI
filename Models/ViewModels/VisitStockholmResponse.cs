@@ -19,7 +19,7 @@ public class VisitStockholmEventResponse
     public string Previous { get; set; }
 
     [JsonPropertyName("results")]
-    public List<Event> Results { get; set; }
+    public List<VSEvent> Results { get; set; }
 }
 
 [NotMapped]
@@ -40,7 +40,7 @@ public class VSCategory
 }
 
 [NotMapped]
-public class Event
+public class VSEvent
 {
     [JsonPropertyName("id")]
     public string Id { get; set; }
