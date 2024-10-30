@@ -16,7 +16,7 @@ namespace EventVault.Services
             _httpClient = httpClient;
         }
 
-        readonly string apiKey = "";
+        readonly string apiKey = Environment.GetEnvironmentVariable("KulturApiKey");
 
         public async Task<List<KBEventViewModel>> GetEventDataAsync()
         {

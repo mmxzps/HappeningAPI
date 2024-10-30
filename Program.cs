@@ -65,6 +65,7 @@ namespace EventVault
 
             // Other services
             builder.Services.AddControllers();
+          
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -72,9 +73,29 @@ namespace EventVault
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
             builder.Services.AddHttpClient<IEventbriteServices, EventbriteServices>();
+            builder.Services.AddScoped<IKBEventServices, KBEventServices>();
+            
+          
             builder.Services.AddTransient<IAuthServices, AuthServices>();
+
             builder.Services.AddTransient<IRoleServices, RoleServices>();
             builder.Services.AddTransient<IAdminServices, AdminServices>();
+
+
+            var smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER");
+            var smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT"));
+            var smtpUser = Environment.GetEnvironmentVariable("SMTP_USER");
+            var smtpPass = Environment.GetEnvironmentVariable("SMTP_PASS");
+
+            builder.Services.AddTransient<IEmailSender, EmailSender>(i =>
+               new EmailSender(
+                   smtpServer,
+                   smtpPort,
+                   smtpUser,
+                   smtpPass
+               )
+            );
+
 
             var app = builder.Build();
 
