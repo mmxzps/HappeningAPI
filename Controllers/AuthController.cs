@@ -76,6 +76,11 @@ namespace EventVault.Controllers
                 return Ok("If an account with that username exists, a password reset link has been sent.");
             }
 
+            if (string.IsNullOrEmpty(user.Email))
+            {
+                return BadRequest("User found, but email address is not set.");
+            }
+
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             var callbackUrl = Url.Action("ResetPassword", "Auth", new { userId = user.Id, token = token }, Request.Scheme);

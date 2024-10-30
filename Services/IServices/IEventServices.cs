@@ -8,8 +8,6 @@ namespace EventVault.Services.IServices
     {
         Task<IEnumerable<EventGetDTO>> GetAllEventsAsync();
         Task<List<ShowEventDTO>> GetEventInCityAsync(string city);
-
         Task<bool> AddEventToDbAsync(EventCreateDTO eventCreateDTO);
-
     }
 }
