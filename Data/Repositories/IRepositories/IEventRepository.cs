@@ -8,8 +8,7 @@ namespace EventVault.Data.Repositories.IRepositories
     {
         Task<IEnumerable<Event>> GetAllEventsAsync();
 
-        Task<EventHolder> GetEventInCityAsync(string city);
-
         Task<bool> AddEventToDbAsync(Event eventToAdd);
+        Task<EventHolder> GetEventInCityAsync(string city);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace EventVault.Models
 {
@@ -9,30 +10,25 @@ namespace EventVault.Models
         [Key]
         public int Id { get; set; }
 
-        string Title;
+        public string Title { get; set; }
 
-        String Description;
+        public string Description { get; set; }
 
+        public List<DateTime> Dates { get; set; } = new List<DateTime>();
 
-        //if event runs several dates
+        public bool RequiresTickets { get; set; }
 
-        List<DateTime> Dates;
+        public bool TicketsAreAvailable { get; set; }
 
-        bool requiresTickets;
+        public decimal HighestPrice { get; set; }
 
-        bool ticketsAreAvaliable;
+        public decimal LowestPrice { get; set; }
 
-        //for pricerange
-
-        Decimal HighestPrice;
-
-        Decimal LowestPrice;
-
-        String EventUrlPage;
+        public string EventUrlPage { get; set; }
 
         [ForeignKey("Venue")]
-        int FK_Venue;
+        public int FK_Venue { get; set; }
 
-        Venue Venue;
+        public Venue Venue { get; set; }
     }
 }
