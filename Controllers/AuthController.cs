@@ -1,4 +1,5 @@
-﻿using EventVault.Models.DTOs.Identity;
+﻿using EventVault.Models;
+using EventVault.Models.DTOs.Identity;
 using EventVault.Services;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Http;
@@ -15,9 +16,9 @@ namespace EventVault.Controllers
         private readonly IAuthServices _authServices;
         private readonly IRoleServices _roleServices;
         private readonly IEmailSender _emailSender;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public AuthController(IAuthServices authServices, IRoleServices roleServices, IEmailSender emailSender, UserManager<IdentityUser> userManager)
+        public AuthController(IAuthServices authServices, IRoleServices roleServices, IEmailSender emailSender, UserManager<User> userManager)
         {
             _authServices = authServices;
             _roleServices = roleServices;

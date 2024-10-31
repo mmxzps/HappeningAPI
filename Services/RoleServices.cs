@@ -1,4 +1,5 @@
-﻿using EventVault.Models.DTOs.Identity;
+﻿using EventVault.Models;
+using EventVault.Models.DTOs.Identity;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
@@ -8,9 +9,9 @@ namespace EventVault.Services
     public class RoleServices : IRoleServices
     {
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
 
-        public RoleServices(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public RoleServices(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -28,7 +29,7 @@ namespace EventVault.Services
             }
         }
 
-        public async Task AssignRoleBasedOnUsernameAsync(IdentityUser user)
+        public async Task AssignRoleBasedOnUsernameAsync(User user)
         {
             if (!await _roleManager.RoleExistsAsync("Admin") || !await _roleManager.RoleExistsAsync("User"))
             {

@@ -35,7 +35,7 @@ namespace EventVault
 
             // Identity framework
             builder.Services.AddAuthorization();
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<EventVaultDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -79,6 +79,10 @@ namespace EventVault
             builder.Services.AddTransient<IAuthServices, AuthServices>();
             builder.Services.AddTransient<IRoleServices, RoleServices>();
             builder.Services.AddTransient<IAdminServices, AdminServices>();
+
+            // User repo & service
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             var app = builder.Build();
 
