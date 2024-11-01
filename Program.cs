@@ -100,33 +100,8 @@ namespace EventVault
             builder.Services.AddScoped<IKBEventServices, KBEventServices>();
             builder.Services.AddScoped<IVisitStockholmServices, VisitStockholmServices>();
             builder.Services.AddScoped<ITicketMasterServices, TicketMasterServices>();
-
             builder.Services.AddHttpClient<IEventbriteServices, EventbriteServices>();
 
-            builder.Services.AddTransient<IAuthServices, AuthServices>();
-
-
-            var smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER");
-            var smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT"));
-            var smtpUser = Environment.GetEnvironmentVariable("SMTP_USER");
-            var smtpPass = Environment.GetEnvironmentVariable("SMTP_PASS");
-
-            builder.Services.AddTransient<IEmailSender, EmailSender>(i =>
-               new EmailSender(
-                   smtpServer,
-                   smtpPort,
-                   smtpUser,
-                   smtpPass
-               )
-            );
-
-
-            // Swagger - Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            
             // Services & repositories identity
             builder.Services.AddTransient<IAuthServices, AuthServices>();
             builder.Services.AddTransient<IRoleServices, RoleServices>();
@@ -142,7 +117,7 @@ namespace EventVault
             {
                 var roleService = scope.ServiceProvider.GetRequiredService<IRoleServices>();
                 await roleService.InitalizeRolesAsync();
-
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
