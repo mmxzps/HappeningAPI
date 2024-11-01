@@ -1,11 +1,12 @@
 ﻿using EventVault.Models.DTOs;
+using EventVault.Models.ViewModels;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventVault.Controllers
 {
+    [Route("[Controller]API")]
     [ApiController]
-    [Route("[Controller]")]
     public class VisitStockholmController : Controller
     {
         private readonly IVisitStockholmServices _visitStockholmServices;
@@ -17,7 +18,8 @@ namespace EventVault.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<EventGetDTO>> GetEvents()
+        [Route("getEvents")]
+        public async Task<IEnumerable<EventViewModel>> GetEvents()
         {
             var results = await _visitStockholmServices.GetResponse($"{_baseUrl} eventdates /? date_from = &date_to = &one_time = true & categories = music");
 

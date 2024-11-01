@@ -37,20 +37,6 @@ namespace EventVault.Controllers
 
         }
 
-        [HttpGet("{city}")]
-        public async Task<IActionResult> GetEventsInCity(string city)
-        {
-            try
-            {
-                var eventt = await _eventServices.GetEventInCityAsync(city);
-                return Ok(eventt);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         //[Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> AddEventToDb(EventCreateDTO eventCreateDTO)

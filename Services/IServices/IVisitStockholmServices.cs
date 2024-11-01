@@ -1,10 +1,11 @@
 ﻿
 using EventVault.Models.DTOs;
+using EventVault.Models.ViewModels;
 
 namespace EventVault.Services.IServices
 {
     public interface IVisitStockholmServices
     {
-        Task<IEnumerable<EventGetDTO>> GetResponse(string url);
+        Task<IEnumerable<EventViewModel>> GetResponse(string url);
     }
 }

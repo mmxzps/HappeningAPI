@@ -1,10 +1,14 @@
 ﻿using Azure;
 using EventVault.Data.Repositories.IRepositories;
+using EventVault.Models;
 using EventVault.Models.DTOs;
 using EventVault.Models.Eventbrite;
+using EventVault.Models.ViewModels;
 using EventVault.Services.IServices;
 using System.Net.Http;
 using System.Text.Json;
+using EventVault.Models;
+using System.Globalization;
 
 namespace EventVault.Services
 {
@@ -17,9 +21,9 @@ namespace EventVault.Services
             _eventRepository = eventRepository;
   
         }
-        public async Task<IEnumerable<EventGetDTO>> GetResponse(string baseUrl)
+        public async Task<IEnumerable<EventViewModel>> GetResponse(string baseUrl)
         {
-            var eventList = new List<EventGetDTO>();
+            var eventList = new List<EventViewModel>();
             var _httpclient = new HttpClient();
             var startUrl = "https://www.visitstockholm.se/api/public-v1/occurrences/?date_from=&date_to=&one_time=true&categories=clubs-parties&categories=music";
             string nextUrl = startUrl;
@@ -36,46 +40,51 @@ namespace EventVault.Services
                     foreach (var vsEvent in visitStockholmResponse.Results)
                     {
                         // Map each Event to EventGetDTO
-                        var eventDTO = new EventGetDTO
+                        var eventViewModel = new EventViewModel
                         {
 
                             EventId = vsEvent.Id,
                             Category = string.Join(" ", (from row in vsEvent.EventCategories select row.Slug).ToArray()),
-                            //Id = int.Parse(vsEvent.Id), // Assuming the Id is a string, convert to int.
                             Title = vsEvent.Title?.En ?? "No title", // Use English title, if null = "No title"
                             Description = vsEvent.Description?.En ?? "No description", // English description, if null = "No description"
                             APIEventUrlPage = vsEvent.Url ?? "",
                             EventUrlPage = vsEvent.ExternalWebsiteUrl ?? "",
                             ImageUrl = "visitstockholm.se/" + vsEvent.FeaturedImage.Url,
-                            StartDate = DateTime.TryParse(vsEvent.StartDate, out var startDate) ? startDate : DateTime.MinValue,
-                            EndDate = DateTime.TryParse(vsEvent.EndDate, out var endDate) ? endDate : DateTime.MinValue,
-                            StartTime = TimeSpan.TryParse(vsEvent.StartTime, out var startTime) ? startTime : TimeSpan.MinValue,
-                            EndTime = TimeSpan.TryParse(vsEvent.EndTime, out var endTime) ? endTime : TimeSpan.MinValue,
 
-
-                            // No data for these from API :(
-
-                            //requiresTickets = ,
-                            //ticketsAreAvaliable = ,
-                            //HighestPrice =  , // Set this properly if available in the API response
-                            //LowestPrice =     // Set this properly if available in the API response
-
-                            Venue = new VenueGetDTO
+                            Venue = new VenueViewModel
                             {
                                 Name = vsEvent.VenueName,
                                 Address = vsEvent.Address,
-                                City = vsEvent.City
+                                City = vsEvent.City,
+                                ZipCode = vsEvent.ZipCode
                             }
                         };
 
+                        // Parse date
+                        bool dateParsed = DateTime.TryParseExact(vsEvent.StartDate, "yyyy-MM-dd",
+                                             CultureInfo.InvariantCulture,
+                                             DateTimeStyles.None,
+                                             out DateTime parsedDate);
+
+                        // Parse time
+                        bool timeParsed = TimeSpan.TryParseExact(vsEvent.StartTime, "hh\\:mm",
+                                                                 CultureInfo.InvariantCulture,
+                                                                 out TimeSpan parsedTime);
+
+                        if (dateParsed && timeParsed)
+                        {
+                            DateTime startDate = parsedDate.Add(parsedTime);
+                            eventViewModel.Dates.Add(startDate);
+                        }
+
                         if (vsEvent.Location != null)
                         {
-                            eventDTO.Venue.LocationLat = vsEvent.Location.Latitude.ToString() ?? "";
-                            eventDTO.Venue.LocationLong = vsEvent.Location.Longitude.ToString() ?? "";
+                            eventViewModel.Venue.LocationLat = vsEvent.Location.Latitude.ToString() ?? "";
+                            eventViewModel.Venue.LocationLong = vsEvent.Location.Longitude.ToString() ?? "";
                         }
 
                         // Add to the list of DTOs
-                        eventList.Add(eventDTO);
+                        eventList.Add(eventViewModel);
                     }
                 }
 

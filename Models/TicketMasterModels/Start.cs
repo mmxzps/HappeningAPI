@@ -11,7 +11,7 @@ namespace TicketmasterTesting.Models.TicketMasterModels
         public string LocalTime { get; set; }
 
         [JsonPropertyName("dateTime")]
-        public DateTime DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
 
         [JsonPropertyName("dateTBD")]
         public bool DateTBD { get; set; }

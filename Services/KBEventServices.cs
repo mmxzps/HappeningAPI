@@ -21,7 +21,7 @@ namespace EventVault.Services
 
         readonly string apiKey = Environment.GetEnvironmentVariable("KulturApiKey");
 
-        public async Task<List<KBEventViewModel>> GetEventDataAsync()
+        public async Task<List<EventViewModel>> GetEventDataAsync()
         {
             var request1 = new HttpRequestMessage(HttpMethod.Get, "https://kulturbiljetter.se/api/v3/events/");
             request1.Headers.Add("Authorization", $"Token {apiKey}");
@@ -82,44 +82,58 @@ namespace EventVault.Services
 
             }
 
-            var EventViewModels = new List<EventGetDTO>();
+            var EventViewModels = new List<EventViewModel>();
 
             foreach (KBEventViewModel eventResponse in responseList)
             {
-                EventGetDTO eventViewModel = new EventGetDTO()
+                var eventViewModel = new EventViewModel()
                 {
-                    Id = eventResponse.organizer.organizer_id,
+                    EventId = eventResponse.organizer.organizer_id.ToString(),
                     Title = eventResponse.title,
-                    Description = eventResponse.presentation_short
+                    Description = eventResponse.presentation_short,
+                    HighestPrice = eventResponse.price_max,
+                    LowestPrice = eventResponse.price_min,
+                    EventUrlPage = eventResponse.url_event_page
                 };
 
+                //add releasetime of tickets to viewmodel
                 if (eventResponse.unixtime_release != null)
                 {
                     eventViewModel.ticketsRelease = DateTimeOffset.FromUnixTimeSeconds(eventResponse.unixtime_release).DateTime;
                 }
 
-                
-                //foreach ( EventDate responsedate in eventResponse.dates)
-                //{
-                //    eventViewModel.Dates.Add(new Date
-                //    {
-                //        startTime = DateTimeOffset.FromUnixTimeSeconds(responsedate.unixtime_open).DateTime,
-                //        ticketUrl = responsedate.url_checkout
-                //    });
-                //}
+                //add dates to viewmodel
+                if (eventResponse.dates != null)
+                {
+                    eventViewModel.Dates = await ConvertEventDates(eventResponse.dates);
+                }
 
+                //add image to viewmodel
                 if (eventResponse.images != null)
                 {
                     eventViewModel.ImageUrl = eventResponse.images["0"];
                 }
 
+                //add venue to viewmodel
+                if (eventResponse.locations != null && eventResponse.locations.Any())
+                {
+                    eventViewModel.Venue = new VenueViewModel
+                    {
+                        Name = eventResponse.locations.First().Value.name,
+                        Address = eventResponse.locations.First().Value.street,
+                        City = eventResponse.locations.First().Value.city,
+                    };
+                }
+
+                //add viewmodel to list of viewmodels.
                 EventViewModels.Add(eventViewModel);
             }
 
             
+            return EventViewModels;
 
-
-            return responseList;
+            //returning viewModels instead of 
+            //return responseList;
         }
 
         public async Task<IEnumerable<KBEventListViewModel>> GetListOfEventsAsync()
@@ -153,6 +167,20 @@ namespace EventVault.Services
             {
                 throw new Exception($"Failed to fetch data. Error {response.StatusCode}");
             }
+        }
+
+        public async Task<List<DateTime>> ConvertEventDates(Dictionary<string, EventDate> eventDates)
+        {
+            var dateList = new List<DateTime>();
+
+            foreach (var entry in eventDates.Values)
+            {
+                var date = DateTimeOffset.FromUnixTimeSeconds(entry.unixtime_start).DateTime;
+
+                dateList.Add(date);
+            }
+
+            return dateList;
         }
     }
 }
