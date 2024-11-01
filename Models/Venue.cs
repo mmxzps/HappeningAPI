@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace EventVault.Models
 {
@@ -19,6 +20,5 @@ namespace EventVault.Models
         public string City { get; set; }
         public string LocationLat { get; set; }
         public string LocationLong { get; set; }
-
     }
 }

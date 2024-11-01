@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace EventVault.Models
 {
@@ -8,8 +9,8 @@ namespace EventVault.Models
     {
         [Key]
         public int Id { get; set; }
-        public string EventId { get; set; }
-        public string Category { get; set; }
+        public string EventId { get; set; }      
+        public string Category { get; set; }     
         public string Title { get; set; }
         public string APIEventUrlPage { get; set; }
         public string EventUrlPage { get; set; }
@@ -26,11 +27,7 @@ namespace EventVault.Models
         public DateTime? ticketsRelease {  get; set; }
 
         //for pricerange
-
         public Decimal HighestPrice { get; set; }
         public Decimal LowestPrice { get; set; }
-
-
-
     }
 }

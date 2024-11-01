@@ -1,39 +1,40 @@
 using EventVault.Data;
 using EventVault.Data.Repositories;
 using EventVault.Data.Repositories.IRepositories;
-using EventVault.Services;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using DotNetEnv;
-using EventVault.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using DotNetEnv;
+using EventVault.Models;
+using EventVault.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace EventVault
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             Env.Load();
 
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
-            builder.Services.AddDbContext<EventVaultDbContext>( options =>
-
+            builder.Services.AddDbContext<EventVaultDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
+
 
             //CORS-Policy
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("LocalReact", policy =>
                 {
-                    //lägg in localhost reactapp som kör när vi startar react. 
+                    //lï¿½gg in localhost reactapp som kï¿½r nï¿½r vi startar react. 
                     policy.WithOrigins("http://localhost:5174")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
@@ -41,7 +42,7 @@ namespace EventVault
             });
 
 
-            //Policy som är mindre säker och tillåter vem som helst att ansluta. Om god säkerhet finns i api med auth, så kan den här användas.
+            //Policy som ï¿½r mindre sï¿½ker och tillï¿½ter vem som helst att ansluta. Om god sï¿½kerhet finns i api med auth, sï¿½ kan den hï¿½r anvï¿½ndas.
             //builder.Services.AddCors(options =>
             //{
             //    options.AddDefaultPolicy(policy =>
@@ -50,13 +51,17 @@ namespace EventVault
             //    });
             //});
 
+            // Configure SMTP settings
+            // (The correct one) :)
+            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+
             // Identity framework
             builder.Services.AddAuthorization();
-
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<EventVaultDbContext>()
-            .AddDefaultTokenProviders()
-            .AddDefaultUI();
+                .AddEntityFrameworkStores<EventVaultDbContext>()
+                .AddDefaultTokenProviders();
 
             // JWT Authentication
             var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
@@ -84,16 +89,20 @@ namespace EventVault
 
             // Other services
             builder.Services.AddControllers();
+          
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Services & repos
+            // Services & repositories events
+            builder.Services.AddHttpClient();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
+            builder.Services.AddScoped<IKBEventServices, KBEventServices>();
             builder.Services.AddScoped<IVisitStockholmServices, VisitStockholmServices>();
             builder.Services.AddScoped<ITicketMasterServices, TicketMasterServices>();
 
             builder.Services.AddHttpClient<IEventbriteServices, EventbriteServices>();
+
             builder.Services.AddTransient<IAuthServices, AuthServices>();
 
 
@@ -111,28 +120,29 @@ namespace EventVault
                )
             );
 
-            builder.Services.AddControllers();
-
-            builder.Services.AddHttpClient();
-            // Controllers
-
-            builder.Services.AddControllers();
 
             // Swagger - Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Services
-            builder.Services.AddHttpClient();
-            builder.Services.AddScoped<IEventRepository, EventRepository>();
-            builder.Services.AddScoped<IEventServices, EventServices>();
-            builder.Services.AddScoped<IKBEventServices, KBEventServices>();
+            
+            // Services & repositories identity
+            builder.Services.AddTransient<IAuthServices, AuthServices>();
+            builder.Services.AddTransient<IRoleServices, RoleServices>();
+            builder.Services.AddTransient<IAdminServices, AdminServices>();
 
             var app = builder.Build();
 
+
             // Use corspolicy set above ^.
             app.UseCors("LocalReact");
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleService = scope.ServiceProvider.GetRequiredService<IRoleServices>();
+                await roleService.InitalizeRolesAsync();
+
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -141,17 +151,13 @@ namespace EventVault
                 app.UseSwaggerUI();
             }
 
-            app.MapIdentityApi<IdentityUser>();
-
             app.UseHttpsRedirection();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();
-
         }
     }
 }
+

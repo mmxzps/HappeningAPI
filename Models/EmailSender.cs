@@ -1,42 +1,36 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
-using System.Net;
-using System.Net.Mail;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
+using EventVault.Models;
+using MailKit.Security;
 
 public class EmailSender : IEmailSender
 {
-    private readonly string _smtpServer;
-    private readonly int _smtpPort;
-    private readonly string _smtpUser;
-    private readonly string _smtpPass;
+    private readonly SmtpSettings _smtpSettings;
 
-    public EmailSender(string smtpServer, int smtpPort, string smtpUser, string smtpPass)
+    public EmailSender(IOptions<SmtpSettings> smtpSettings)
     {
-        _smtpServer = smtpServer;
-        _smtpPort = smtpPort;
-        _smtpUser = smtpUser;
-        _smtpPass = smtpPass;
+        _smtpSettings = smtpSettings.Value;
     }
 
-    public Task SendEmailAsync(string email, string subject, string htmlMessage)
+    public async Task SendEmailAsync(string email, string subject, string message)
     {
-        var client = new SmtpClient(_smtpServer, _smtpPort)
+        var emailMessage = new MimeMessage();
+        emailMessage.From.Add(new MailboxAddress("EventVault", _smtpSettings.User));
+        emailMessage.To.Add(new MailboxAddress("", email));
+        emailMessage.Subject = subject;
+        emailMessage.Body = new TextPart("html") { Text = message };
+
+        using (var client = new SmtpClient())
         {
-            Credentials = new NetworkCredential(_smtpUser, _smtpPass),
-            EnableSsl = true,
-        };
-
-        var mailMessage = new MailMessage
-        {
-            From = new MailAddress(_smtpUser),
-            Subject = subject,
-            Body = htmlMessage,
-            IsBodyHtml = true,
-        };
-
-        mailMessage.To.Add(email);
-
-        return client.SendMailAsync(mailMessage);
+            await client.ConnectAsync(_smtpSettings.Server, _smtpSettings.Port, SecureSocketOptions.StartTls);
+            await client.AuthenticateAsync(_smtpSettings.User, _smtpSettings.Password);
+            await client.SendAsync(emailMessage);
+            await client.DisconnectAsync(true);
+        }
     }
 }
+
 

@@ -18,7 +18,7 @@ namespace EventVault.Controllers
             _eventServices = eventServices;
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> GetAllEvents()
         {
@@ -38,6 +38,7 @@ namespace EventVault.Controllers
         }
 
         //[Authorize(Roles = "Admin")]
+
         [HttpPost]
         public async Task<IActionResult> AddEventToDb(EventCreateDTO eventCreateDTO)
         {
