@@ -27,7 +27,7 @@ namespace EventVault.Controllers
         }
 
         [HttpGet]
-        [Route("getEvent")]
+        [Route("getEvents")]
         public async Task<ActionResult<EventGetDTO>> GetEvent()
         {
             var eventObject = await _services.GetEventDataAsync();
