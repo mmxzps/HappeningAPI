@@ -1,6 +1,8 @@
 ﻿using EventVault.Data.Repositories.IRepositories;
 using EventVault.Models;
 using EventVault.Models.DTOs;
+using EventVault.Models.ViewModels;
+using MimeKit.Cryptography;
 
 namespace EventVault.Services.IServices
 {
@@ -32,44 +34,9 @@ namespace EventVault.Services.IServices
             {
                 //add necessary data for Eventobject
             };
-
             return await _eventRepository.AddEventToDbAsync(eventToAdd);
         }
 
-        public async Task<List<ShowEventDTO>> GetEventInCityAsync(string city)
-        {
-            try
-            {
-                var eventHolder = await _eventRepository.GetEventInCityAsync(city);
-                if(eventHolder == null || eventHolder.Embedded == null || eventHolder.Embedded.Events == null)
-                {
-                    throw new Exception("Couldn't find data! Did you spell city name right?");
-                }
-                var dto = eventHolder.Embedded.Events.Select(x => new ShowEventDTO
-                {
-                    EventName = x.Name,
-                    EventDate = x.Dates.Start.DateTime,
-                    ImageUrl = x.Images.FirstOrDefault(x => x.Ratio == "3_2").Url,
-                    TicketPurchaseUrl = x.Url,
-                    VenueName = x.Embedded?.Venues.FirstOrDefault()?.Name,
-                    City = x.Embedded.Venues.FirstOrDefault().City.Name,
-                    Address = x.Embedded?.Venues.FirstOrDefault()?.Address.Line1,
-                    MinPrice = x.PriceRanges.FirstOrDefault().Min,
-                    MaxPrice = x.PriceRanges.FirstOrDefault().Max,
-                    Currency = x.PriceRanges.FirstOrDefault().Currency,
-                    Category = x.Classifications.FirstOrDefault().Genre.Name,
-                    SubCategory = x.Classifications.FirstOrDefault().SubGenre.Name,
-                    AvailabilityStatus = x.Dates.Status.Code,
-                });
-
-                return dto.ToList();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"message: {ex.Message}");
-            }
-
-
-        }
+        
     }
 }

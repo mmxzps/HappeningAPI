@@ -1,9 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using EventVault.Models.DTOs;
 
-namespace EventVault.Models.DTOs
+namespace EventVault.Models.ViewModels
 {
-    public class EventGetDTO
+    public class EventViewModel
     {
         public int Id { get; set; }
         public string EventId { get; set; }
@@ -15,15 +14,14 @@ namespace EventVault.Models.DTOs
         public string EventUrlPage { get; set; }
 
         //if event runs several dates
-        public List<DateTime> Dates = new List<DateTime>();
-        public DateTime ticketsRelease { get; set; }
+        public List<DateTime> Dates { get; set; } = new List<DateTime>();
+        public DateTime? ticketsRelease { get; set; }
 
         //for pricerange
         public Decimal HighestPrice { get; set; }
         public Decimal LowestPrice { get; set; }
 
         //Venue
-        public VenueGetDTO Venue { get; set; }
-       
+        public VenueViewModel Venue { get; set; }
     }
 }
