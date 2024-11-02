@@ -13,6 +13,7 @@ using DotNetEnv;
 using EventVault.Models;
 using EventVault.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Azure.Communication.Email;
 
 namespace EventVault
 {
@@ -69,9 +70,15 @@ namespace EventVault
                 options.CallbackPath = "/signin-google";
             });
 
+            builder.Services.AddScoped(options =>
+            {
+                var azureConnectionString = Environment.GetEnvironmentVariable("AZURE_CONNECTION_STRING");
+
+                return new EmailClient(azureConnectionString);
+            });
+
             // Other services
-            builder.Services.AddControllers();
-          
+            builder.Services.AddControllers();         
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

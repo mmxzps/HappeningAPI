@@ -157,7 +157,6 @@ namespace EventVault.Controllers
                 }
             }
 
-
             var token = _authServices.GenerateToken(user);
 
             return Ok( new {token});
