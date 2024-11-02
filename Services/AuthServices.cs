@@ -7,12 +7,6 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 
-//TODO:
-
-// Add tracing codes, eg. if user has choosen "dark mode" 
-// Add logic for admin users as well
-// Add "ForgetUserNameOrPassword" method
-
 namespace EventVault.Services
 {
     public class AuthServices : IAuthServices

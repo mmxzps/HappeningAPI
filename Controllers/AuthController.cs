@@ -1,10 +1,13 @@
 ﻿using EventVault.Models.DTOs.Identity;
 using EventVault.Services;
 using EventVault.Services.IServices;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace EventVault.Controllers
 {
@@ -15,14 +18,16 @@ namespace EventVault.Controllers
         private readonly IAuthServices _authServices;
         private readonly IRoleServices _roleServices;
         private readonly IEmailSender _emailSender;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public AuthController(IAuthServices authServices, IRoleServices roleServices, IEmailSender emailSender, UserManager<IdentityUser> userManager)
+        public AuthController(IAuthServices authServices, IRoleServices roleServices, IEmailSender emailSender, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _authServices = authServices;
             _roleServices = roleServices;
             _emailSender = emailSender;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [HttpPost]
@@ -67,7 +72,7 @@ namespace EventVault.Controllers
         }
 
         [HttpPost]
-        [Route("forgotpassword")]
+        [Route("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO forgotPasswordDTO)
         {
             var user = await _authServices.GetUserByUsernameAsync(forgotPasswordDTO.UserName);
@@ -92,7 +97,7 @@ namespace EventVault.Controllers
         }
 
         [HttpPost]
-        [Route("resetpassword")]
+        [Route("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDTO)
         {
             var user = await _userManager.FindByIdAsync(resetPasswordDTO.UserId);
@@ -108,6 +113,54 @@ namespace EventVault.Controllers
             }
 
             return BadRequest(result.Errors);
+        }
+
+        [HttpGet]
+        [Route("google-login")]
+        public async Task<IActionResult> GoogleLogin()
+        {
+            var redirectUrl = Url.Action("google-response", "Auth");
+
+            var props = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+
+            return new ChallengeResult("Google", props);
+        }
+
+        [HttpGet]
+        [Route("google-response")]
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest("Google authentication failed");
+            }
+
+            var userInfo = await _signInManager.GetExternalLoginInfoAsync();
+
+            var user = await _userManager.FindByEmailAsync(result.Principal.FindFirstValue(ClaimTypes.Email));
+
+            if (user == null)
+            {
+                user = new IdentityUser
+                {
+                    UserName = result.Principal.FindFirstValue(ClaimTypes.Name),
+                    Email = result.Principal.FindFirstValue(ClaimTypes.Email)
+                };
+
+                var createdUser = await _userManager.CreateAsync(user);
+
+                if (!createdUser.Succeeded)
+                {
+                    return BadRequest("Could not find email");
+                }
+            }
+
+
+            var token = _authServices.GenerateToken(user);
+
+            return Ok( new {token});
         }
     }
 }

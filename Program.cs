@@ -61,6 +61,12 @@ namespace EventVault
                     ValidAudience = jwtAudience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                 };
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+                options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_SECRET");
+                options.CallbackPath = "/signin-google";
             });
 
             // Other services
