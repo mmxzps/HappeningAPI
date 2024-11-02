@@ -87,22 +87,6 @@ namespace EventVault
             builder.Services.AddTransient<IRoleServices, RoleServices>();
             builder.Services.AddTransient<IAdminServices, AdminServices>();
 
-
-            var smtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER");
-            var smtpPort = int.Parse(Environment.GetEnvironmentVariable("SMTP_PORT"));
-            var smtpUser = Environment.GetEnvironmentVariable("SMTP_USER");
-            var smtpPass = Environment.GetEnvironmentVariable("SMTP_PASS");
-
-            builder.Services.AddTransient<IEmailSender, EmailSender>(i =>
-               new EmailSender(
-                   smtpServer,
-                   smtpPort,
-                   smtpUser,
-                   smtpPass
-               )
-            );
-
-
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
