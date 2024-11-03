@@ -17,17 +17,17 @@ namespace EventVault.Controllers
     {
         private readonly IAuthServices _authServices;
         private readonly IRoleServices _roleServices;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailService _emailService;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public AuthController(IAuthServices authServices, IRoleServices roleServices, IEmailSender emailSender, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AuthController(IAuthServices authServices, IRoleServices roleServices, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IEmailService emailService)
         {
             _authServices = authServices;
             _roleServices = roleServices;
-            _emailSender = emailSender;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailService = emailService;
         }
 
         [HttpPost]
@@ -39,14 +39,29 @@ namespace EventVault.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _authServices.Register(registerDTO);
+            var userUsername = await _authServices.GetUserByUsernameAsync(registerDTO.UserName);
+            var userEmail = await _authServices.GetUserByEmailAsync(registerDTO.Email);
+
+            if (userEmail!=null || userUsername != null)
+            {
+                return BadRequest("Email or username already taken");
+            }
+            var user = new IdentityUser
+            {
+                UserName = registerDTO.UserName,
+                Email = registerDTO.Email
+            };
+
+            var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
             if (result.Succeeded)
             {
-                var user = await _authServices.GetUserByUsernameAsync(registerDTO.UserName);
-                await _roleServices.AssignRoleBasedOnUsernameAsync(user);
+                var emailConfirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = Url.Action("ConfirmEmail", "Auth", new { token = emailConfirmToken, email = user.Email }, Request.Scheme);
 
-                return Ok("User registered successfully with assigned role.");
+                await _emailService.SendEmailAsync(user.Email, "Confirm your email", $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+
+                return Ok("User registered successfully. Please confirm your email.");
             }
 
             return BadRequest(result.Errors);
@@ -71,6 +86,27 @@ namespace EventVault.Controllers
             return Ok(tokenString);
         }
 
+        [HttpGet]
+        [Route("email-confirm")]
+        public async Task<IActionResult> ConfirmEmail(string emailConfirmToken, string email)
+        {
+            var user = await _authServices.GetUserByEmailAsync(email);
+
+            if (user == null)
+            {
+                return BadRequest("Email invalid");
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, emailConfirmToken);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest("Email confirmation failed");
+            }
+
+            return Ok("Email confirmed");
+        }
+
         [HttpPost]
         [Route("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO forgotPasswordDTO)
@@ -90,7 +126,7 @@ namespace EventVault.Controllers
 
             var callbackUrl = Url.Action("ResetPassword", "Auth", new { userId = user.Id, token = token }, Request.Scheme);
 
-            await _emailSender.SendEmailAsync(user.Email, "Reset Password",
+            await _emailService.SendEmailAsync(user.Email, "Reset Password",
                 $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
 
             return Ok("If an account with that username exists, a password reset link has been sent.");
@@ -119,7 +155,7 @@ namespace EventVault.Controllers
         [Route("google-login")]
         public async Task<IActionResult> GoogleLogin()
         {
-            var redirectUrl = Url.Action("google-response", "Auth");
+            var redirectUrl = Url.Action("GoogleResponse", "Auth");
 
             var props = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
 
@@ -139,7 +175,7 @@ namespace EventVault.Controllers
 
             var userInfo = await _signInManager.GetExternalLoginInfoAsync();
 
-            var user = await _userManager.FindByEmailAsync(result.Principal.FindFirstValue(ClaimTypes.Email));
+            var user = await _authServices.GetUserByEmailAsync(result.Principal.FindFirstValue(ClaimTypes.Email));
 
             if (user == null)
             {

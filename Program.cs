@@ -29,11 +29,6 @@ namespace EventVault
             builder.Services.AddDbContext<EventVaultDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 
-            // Configure SMTP settings
-            // (The correct one) :)
-            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-            builder.Services.AddTransient<IEmailSender, EmailSender>();
-
             // Identity framework
             builder.Services.AddAuthorization();
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -90,9 +85,9 @@ namespace EventVault
             
           
             builder.Services.AddTransient<IAuthServices, AuthServices>();
-
             builder.Services.AddTransient<IRoleServices, RoleServices>();
             builder.Services.AddTransient<IAdminServices, AdminServices>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             var app = builder.Build();
 
