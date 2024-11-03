@@ -1,5 +1,6 @@
 ﻿using EventVault.Data.Repositories.IRepositories;
 using EventVault.Models;
+using EventVault.Models.DTOs;
 using EventVault.Services.IServices;
 
 namespace EventVault.Services
@@ -11,11 +12,20 @@ namespace EventVault.Services
         {
             _userRepository = userRepository;
         }
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserGetAllDTO>> GetAllUsersAsync()
         {
            var allusers =  await _userRepository.GetAllUsersAsync();
 
-            return allusers;
+            return allusers.Select(u=> new UserGetAllDTO 
+            {
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                NickName = u.NickName,
+                UserName = u.UserName,
+                Email = u.Email,
+                PhoneNumber = u.PhoneNumber,
+                ProfilePictureUrl = u.ProfilePictureUrl,
+            });
         }
     }
 }

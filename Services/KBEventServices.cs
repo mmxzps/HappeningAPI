@@ -43,7 +43,7 @@ namespace EventVault.Services
                 
                 for(int i = 0; i < eventIds.Count; i++)
                 {
-                    var request = new HttpRequestMessage(HttpMethod.Get, $"https://kulturbiljetter.se/api/v3/events/{eventIds[0]}");
+                    var request = new HttpRequestMessage(HttpMethod.Get, $"https://kulturbiljetter.se/api/v3/events/{eventIds[i]}");
                     string eTag = null;
 
 
