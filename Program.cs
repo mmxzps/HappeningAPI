@@ -64,6 +64,8 @@ namespace EventVault
                 options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
                 options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_SECRET");
                 options.CallbackPath = "/signin-google";
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
             });
 
             builder.Services.AddScoped(options =>

@@ -187,28 +187,38 @@ namespace EventVault.Controllers
             }
 
             var userInfo = await _signInManager.GetExternalLoginInfoAsync();
+            if (userInfo == null)
+            {
+                return BadRequest("Could not retrieve user information from Google.");
+            }
 
-            var user = await _authServices.GetUserByEmailAsync(result.Principal.FindFirstValue(ClaimTypes.Email));
+            var email = userInfo.Principal.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return BadRequest("Email is required.");
+            }
+
+            var user = await _authServices.GetUserByEmailAsync(email);
 
             if (user == null)
             {
                 user = new IdentityUser
                 {
-                    UserName = result.Principal.FindFirstValue(ClaimTypes.Name),
-                    Email = result.Principal.FindFirstValue(ClaimTypes.Email)
+                    Email = email,
+                    UserName = email 
                 };
 
-                var createdUser = await _userManager.CreateAsync(user);
-
-                if (!createdUser.Succeeded)
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
                 {
-                    return BadRequest("Could not find email");
+                    var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
+                    return BadRequest($"Could not create user in the database: {errors}");
                 }
             }
 
-            var token = _authServices.GenerateToken(user);
-
-            return Ok( new {token});
+            var token = await _authServices.GenerateToken(user);
+            return Ok(new { token });
         }
+
     }
 }
