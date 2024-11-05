@@ -42,10 +42,16 @@ namespace EventVault.Controllers
             var userUsername = await _authServices.GetUserByUsernameAsync(registerDTO.UserName);
             var userEmail = await _authServices.GetUserByEmailAsync(registerDTO.Email);
 
-            if (userEmail!=null || userUsername != null)
+            if (userEmail!=null)
             {
-                return BadRequest("Email or username already taken");
+                return BadRequest("Email is already taken");
             }
+
+            if (userUsername != null)
+            {
+                return BadRequest("Username is already taken");
+            }
+
             var user = new IdentityUser
             {
                 UserName = registerDTO.UserName,
@@ -58,8 +64,15 @@ namespace EventVault.Controllers
             {
                 var emailConfirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var callbackUrl = Url.Action("ConfirmEmail", "Auth", new { token = emailConfirmToken, email = user.Email }, Request.Scheme);
+                
+                Console.WriteLine("Attempting to send confirmation email...");
+                var emailSent = await _emailService.SendEmailAsync(user.Email, "Confirm your email", $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
 
-                await _emailService.SendEmailAsync(user.Email, "Confirm your email", $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                if (!emailSent)
+                {
+                    Console.WriteLine("Failed to send confirmation email.");
+                    return BadRequest("User registered, but failed to send confirmation email.");
+                }
 
                 return Ok("User registered successfully. Please confirm your email.");
             }

@@ -14,6 +14,7 @@ using EventVault.Models;
 using EventVault.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Azure.Communication.Email;
+using Sprache;
 
 namespace EventVault
 {
@@ -40,6 +41,10 @@ namespace EventVault
             var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
             var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
+            // Google
+            var googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+            var googleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_SECRET");
+
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -60,8 +65,8 @@ namespace EventVault
             })
             .AddGoogle(options =>
             {
-                options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
-                options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_SECRET");
+                options.ClientId = googleClientId;
+                options.ClientSecret = googleClientSecret;
                 options.CallbackPath = "/signin-google";
             });
 
@@ -80,7 +85,6 @@ namespace EventVault
             // Services & repositories
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
-            builder.Services.AddHttpClient<IEventbriteServices, EventbriteServices>();
             builder.Services.AddScoped<IKBEventServices, KBEventServices>();
             
           
