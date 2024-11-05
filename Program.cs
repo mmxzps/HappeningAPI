@@ -41,10 +41,6 @@ namespace EventVault
             var jwtIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER");
             var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
 
-            // Google
-            var googleClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
-            var googleClientSecret = Environment.GetEnvironmentVariable("GOOGLE_SECRET");
-
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -65,10 +61,14 @@ namespace EventVault
             })
             .AddGoogle(options =>
             {
-                options.ClientId = googleClientId;
-                options.ClientSecret = googleClientSecret;
+                options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+                options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_SECRET");
                 options.CallbackPath = "/signin-google";
             });
+
+            await Console.Out.WriteLineAsync($"Google client id: {Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")}");
+            await Console.Out.WriteLineAsync($"Google client xecret: {Environment.GetEnvironmentVariable("GOOGLE_SECRET")}");
+
 
             builder.Services.AddScoped(options =>
             {
@@ -84,8 +84,8 @@ namespace EventVault
 
             // Services & repositories
             builder.Services.AddScoped<IEventRepository, EventRepository>();
-            builder.Services.AddScoped<IEventServices, EventServices>();
-            builder.Services.AddScoped<IKBEventServices, KBEventServices>();
+            builder.Services.AddHttpClient<IEventServices, EventServices>();
+            builder.Services.AddHttpClient<IKBEventServices, KBEventServices>();
             
           
             builder.Services.AddTransient<IAuthServices, AuthServices>();
