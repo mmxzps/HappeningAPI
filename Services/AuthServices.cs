@@ -1,4 +1,5 @@
-﻿using EventVault.Models.DTOs.Identity;
+﻿using EventVault.Models;
+using EventVault.Models.DTOs.Identity;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -17,10 +18,10 @@ namespace EventVault.Services
 {
     public class AuthServices : IAuthServices
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AuthServices(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthServices(UserManager<User> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -28,7 +29,7 @@ namespace EventVault.Services
 
         public async Task<IdentityResult> Register(RegisterDTO registerDTO)
         {
-            var identityUser = new IdentityUser
+            var identityUser = new User
             {
                 UserName = registerDTO.UserName,
                 Email = registerDTO.Email
@@ -49,12 +50,12 @@ namespace EventVault.Services
             return await _userManager.CheckPasswordAsync(identityUser, loginDTO.Password);
         }
 
-        public async Task<IdentityUser> GetUserByUsernameAsync(string username)
+        public async Task<User> GetUserByUsernameAsync(string username)
         {
             return await _userManager.FindByNameAsync(username);
         }
 
-        public async Task<string> GenerateToken(IdentityUser user)
+        public async Task<string> GenerateToken(User user)
         {
             var claims = new List<Claim>
             {
