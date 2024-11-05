@@ -16,7 +16,7 @@ namespace EventVault.Models.DTOs
 
         //if event runs several dates
         public List<DateTime> Dates = new List<DateTime>();
-        public DateTime ticketsRelease { get; set; }
+        public DateTime TicketsRelease { get; set; }
 
         //for pricerange
         public Decimal HighestPrice { get; set; }

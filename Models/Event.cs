@@ -24,7 +24,7 @@ namespace EventVault.Models
         public List<DateTime> Dates { get; set; } = new List<DateTime>();
 
         //releasedate for ticketavaliability
-        public DateTime? ticketsRelease {  get; set; }
+        public DateTime? TicketsRelease {  get; set; }
 
         //for pricerange
         public Decimal HighestPrice { get; set; }
