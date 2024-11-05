@@ -87,7 +87,7 @@ namespace EventVault.Controllers
         }
 
         [HttpGet]
-        [Route("email-confirm")]
+        [Route("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string emailConfirmToken, string email)
         {
             var user = await _authServices.GetUserByEmailAsync(email);
