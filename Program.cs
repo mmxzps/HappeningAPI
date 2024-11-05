@@ -66,10 +66,6 @@ namespace EventVault
                 options.CallbackPath = "/signin-google";
             });
 
-            await Console.Out.WriteLineAsync($"Google client id: {Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")}");
-            await Console.Out.WriteLineAsync($"Google client xecret: {Environment.GetEnvironmentVariable("GOOGLE_SECRET")}");
-
-
             builder.Services.AddScoped(options =>
             {
                 var azureConnectionString = Environment.GetEnvironmentVariable("AZURE_CONNECTION_STRING");
