@@ -7,10 +7,11 @@ namespace EventVault.Services.IServices
 {
     public interface IEventServices
     {
-
+        Task<bool> AddEventAsync(EventCreateDTO eventCreateDTO);
         Task<IEnumerable<EventGetDTO>> GetAllEventsAsync();
-        Task<EventGetDTO> GetEventById(int id);
-        Task<bool> AddEventToDbAsync(EventCreateDTO eventCreateDTO);
+        Task<EventGetDTO> GetEventAsync(int id);
+        Task<bool> UpdateEventAsync(EventUpdateDTO eventUpdateDTO);
+        Task<bool> DeleteEventAsync(int id);
 
     }
 }

@@ -5,7 +5,7 @@ namespace EventVault.Models.DTOs
 {
     public class EventGetDTO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string EventId { get; set; }
         public string Category { get; set; }
         public string Title { get; set; }
@@ -14,9 +14,8 @@ namespace EventVault.Models.DTOs
         public string APIEventUrlPage { get; set; }
         public string EventUrlPage { get; set; }
 
-        //if event runs several dates
-        public List<DateTime> Dates = new List<DateTime>();
-        public DateTime TicketsRelease { get; set; }
+        public DateTime? Date { get; set; }
+        public DateTime? TicketsRelease { get; set; }
 
         //for pricerange
         public Decimal HighestPrice { get; set; }

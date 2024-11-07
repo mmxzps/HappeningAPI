@@ -20,8 +20,7 @@ namespace EventVault.Controllers
             _eventServices = eventServices;
         }
 
-        //[Authorize(Roles = "Admin")]
-        [HttpGet]
+        [HttpGet("allEvents")]
         public async Task<ActionResult<IEnumerable<EventGetDTO>>> GetAllEvents()
         {
             var events = await _eventServices.GetAllEventsAsync();
@@ -39,7 +38,7 @@ namespace EventVault.Controllers
                     ImageUrl = e.ImageUrl,
                     APIEventUrlPage = e.APIEventUrlPage,
                     EventUrlPage = e.EventUrlPage,
-                    Dates = e.Dates,
+                    Date = e.Date,
                     TicketsRelease = e.TicketsRelease,
                     HighestPrice = e.HighestPrice,
                     LowestPrice = e.LowestPrice,
@@ -67,11 +66,11 @@ namespace EventVault.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<EventGetDTO>> GetEventById(int id)
         {
-            var eventById = await _eventServices.GetEventById(id);
+            var eventById = await _eventServices.GetEventAsync(id);
 
             if (eventById != null)
             {
-                return Ok(e);
+                return Ok($"{eventById}");
             }
 
             else
@@ -79,29 +78,53 @@ namespace EventVault.Controllers
                 return NotFound("No event with that Id in db.");
             }
         }
-    
-        //[Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<IActionResult> AddEventToDb(EventCreateDTO eventCreateDTO)
+
+        [HttpPost("addEvent")]
+        public async Task<IActionResult> AddEvent(EventCreateDTO eventCreateDTO)
         {
-            var eventToAdd = new EventCreateDTO
-            {
-
-                //add whatever is requred in eventobject contains.
-
-            };
-
-            var isSuccessfull = await _eventServices.AddEventToDbAsync(eventCreateDTO);
-
-            if (isSuccessfull)
-            {
-                return Ok("Event Added");
-            }
-
-            else
+            if (!ModelState.IsValid) 
             {
                 return BadRequest();
             }
+
+            await _eventServices.AddEventAsync(eventCreateDTO);
+
+            return Created();
+        }
+
+
+        //[Authorize(Roles = "Admin")] 
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateEvent(int id, EventUpdateDTO eventUpdateDTO)
+        {
+            if (eventUpdateDTO.Id != id)
+            {
+                return BadRequest();
+            }
+
+            var result = await _eventServices.UpdateEventAsync(eventUpdateDTO);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+
+        }
+
+        //[Authorize(Roles = "Admin")]
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteEvent(int id)
+        {
+            var result = await _eventServices.DeleteEventAsync(id);
+
+            if (!result)
+            {
+                return  BadRequest();
+            }
+
+            return NoContent();
         }
     }
     

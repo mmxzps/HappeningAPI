@@ -1,5 +1,6 @@
 ﻿using EventVault.Data.Repositories.IRepositories;
 using EventVault.Models;
+using EventVault.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using TicketmasterTesting.Models.TicketMasterModels;
@@ -10,34 +11,67 @@ namespace EventVault.Data.Repositories
     {
         private readonly EventVaultDbContext _context;
 
-        public EventRepository(EventVaultDbContext context, HttpClient httpClient)
+        public EventRepository(EventVaultDbContext context)
         {
-
             _context = context;
         }
 
-        public async Task<IEnumerable<Event>> GetAllEventsAsync()
+        //create
+        public async Task AddEventAsync(Event eventToAdd)
         {
-            var eventList = await _context.Events.ToListAsync() ?? new List<Event>();
+            await _context.Events.AddAsync(eventToAdd);
 
-            return eventList;
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> AddEventToDbAsync(Event eventToAdd)
+        //get all events
+        public async Task<IEnumerable<Event>> GetAllEventsAsync()
         {
-            try
+            return await _context.Events.ToListAsync();
+        }
+
+        //get event by ID
+        public async Task<Event> GetEventAsync(int? id)
+        {
+            var eventById = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
+
+            return eventById;
+        }
+
+
+        //update event by Id
+        public async Task UpdateEventAsync(Event eventUpdateDTO)
+        {
+            _context.Events.Update(eventUpdateDTO);
+
+            await _context.SaveChangesAsync();
+        }
+
+        //delete event
+        public async Task DeleteEventAsync(Event eventToDelete)
+        {
+            //find venue of event
+            var venue = await _context.Venues
+                .Include(v => v.Events)
+                .FirstOrDefaultAsync(v => v.Id == eventToDelete.FK_Venue);
+
+
+            //remove event
+            _context.Events.Remove(eventToDelete);
+
+            //if connected venue, remove event from its list of events.
+            if (venue != null)
             {
-                await _context.Events.AddAsync(eventToAdd);
-
-                await _context.SaveChangesAsync();
-
-                return true;
+                venue.Events.Remove(eventToDelete);
             }
 
-            catch (Exception ex)
+            //if its the last event at venue, remove the venue
+            if (venue != null && venue.Events.Count == 0)
             {
-                return false;
+                _context.Venues.Remove(venue);
             }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -6,8 +6,10 @@ namespace EventVault.Data.Repositories.IRepositories
 {
     public interface IEventRepository
     {
+        Task AddEventAsync(Event eventToAdd);
         Task<IEnumerable<Event>> GetAllEventsAsync();
-      
-        Task<bool> AddEventToDbAsync(Event eventToAdd);
+        Task<Event> GetEventAsync(int? id);
+        Task UpdateEventAsync(Event eventToUpdate);
+        Task DeleteEventAsync(Event eventToDelete);
     }
 }

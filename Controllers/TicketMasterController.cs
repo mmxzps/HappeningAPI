@@ -18,6 +18,7 @@ namespace EventVault.Controllers
         public async Task<IActionResult> GetEventsInCity()
         {
             string city = "Stockholm";
+
             try
             {
                 var eventt = await _ticketMasterServices.GetEventsInCityAsync(city);
