@@ -101,7 +101,7 @@ namespace EventVault.Controllers
 
         [HttpGet]
         [Route("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail(string emailConfirmToken, string email)
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
         {
             var user = await _authServices.GetUserByEmailAsync(email);
 
@@ -110,7 +110,7 @@ namespace EventVault.Controllers
                 return BadRequest("Email invalid");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, emailConfirmToken);
+            var result = await _userManager.ConfirmEmailAsync(user, token);
 
             if (!result.Succeeded)
             {
