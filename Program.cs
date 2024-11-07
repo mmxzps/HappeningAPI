@@ -75,6 +75,17 @@ namespace EventVault
                 return new EmailClient(azureConnectionString);
             });
 
+            // Adding MVC client
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowClientMVC", policy =>
+                {
+                    policy.WithOrigins("https://localhost:7175/")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
             // Other services
             builder.Services.AddControllers();         
             builder.Services.AddEndpointsApiExplorer();
