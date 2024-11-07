@@ -27,7 +27,9 @@ namespace EventVault.Data.Repositories
         //get all events
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
         {
-            return await _context.Events.ToListAsync();
+            return await _context.Events
+                .Include(e => e.Venue)
+                .ToListAsync();
         }
 
         //get event by ID

@@ -23,19 +23,7 @@ namespace EventVault.Controllers
 
             if (venues != null)
             {
-                // Map Event entity to EventGetDTO
-                var venuesDTOs = venues.Select(v => new VenueGetDTO
-                {
-                    Id = v.Id,
-                    Name = v.Name,
-                    Address = v.Address,
-                    City = v.City,
-                    LocationLat = v.LocationLat,
-                    LocationLong =  v.LocationLong
-                   
-                }).ToList();
-
-                return Ok(venuesDTOs);
+                return Ok(venues);
             }
 
             else

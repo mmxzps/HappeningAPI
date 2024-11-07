@@ -17,22 +17,24 @@ namespace EventVault.Data.Repositories
 
         public async Task <IEnumerable<Venue>> GetAllVenuesAsync()
         {
-            var venues = await _context.Venues.ToListAsync() ?? new List<Venue>();
+            var venues = await _context.Venues
+                .Include(v => v.Events)
+                .ToListAsync() ?? new List<Venue>();
 
             return venues;
         }
 
         public async Task<Venue> GetVenueAsync (int? id)
         {
-            var venue = await _context.Venues.Where(v => v.Id == id).FirstOrDefaultAsync();
+            var venue = await _context.Venues.Include(v => v.Events).Where(v => v.Id == id).FirstOrDefaultAsync();
 
             return venue;
         }
 
-        public async Task<Venue> GetVenueIfInDb(string name, string address, string city)
+        public async Task<Venue> GetVenueIfInDb(string name, string address)
         {
             var venue = await _context.Venues
-                .Where(v => v.Name.ToUpper() == name.ToUpper() && v.Address.ToUpper() == address.ToUpper() && v.City.ToUpper() == city.ToUpper())
+                .Where(v => v.Name.ToUpper() == name.ToUpper() && v.Address.ToUpper() == address.ToUpper())
                 .FirstOrDefaultAsync();
 
             return venue;

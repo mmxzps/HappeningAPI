@@ -25,6 +25,14 @@ namespace EventVault.Data
             .HasForeignKey(e => e.FK_Venue)    
             .OnDelete(DeleteBehavior.Cascade); // Cascade delete: deleting a Venue deletes all Events at venue
 
+            builder.Entity<Event>()
+            .Property(e => e.HighestPrice)
+            .HasColumnType("decimal(18,2)");
+
+            builder.Entity<Event>()
+                .Property(e => e.LowestPrice)
+                .HasColumnType("decimal(18,2)");
+
             base.OnModelCreating(builder);
 
             //add modelbuilders for entity to prevent cascading delete or hasdata for database.

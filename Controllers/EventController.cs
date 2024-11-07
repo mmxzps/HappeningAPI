@@ -80,11 +80,11 @@ namespace EventVault.Controllers
         }
 
         [HttpPost("addEvent")]
-        public async Task<IActionResult> AddEvent(EventCreateDTO eventCreateDTO)
+        public async Task<IActionResult> AddEvent( EventCreateDTO eventCreateDTO)
         {
             if (!ModelState.IsValid) 
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             await _eventServices.AddEventAsync(eventCreateDTO);

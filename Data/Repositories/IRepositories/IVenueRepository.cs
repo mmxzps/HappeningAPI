@@ -6,7 +6,7 @@ namespace EventVault.Data.Repositories.IRepositories
     {
         Task<IEnumerable<Venue>> GetAllVenuesAsync();
         Task<Venue> GetVenueAsync(int? id);
-        Task<Venue> GetVenueIfInDb(string name, string address, string city);  
+        Task<Venue> GetVenueIfInDb(string name, string address);  
         Task AddVenueAsync(Venue venue);
         Task<bool> AddEventToVenue(Event eventToAdd, Venue venue);
         Task UpdateVenueAsync(Venue venue);

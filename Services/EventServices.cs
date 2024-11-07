@@ -103,7 +103,7 @@ namespace EventVault.Services.IServices
 
             //check if venue exists in db, if so add that venue to event. Else,
 
-            var venueToAdd = await _venueRepository.GetVenueIfInDb(eventDTO.Venue.Name, eventDTO.Venue.Address, eventDTO.Venue.City);
+            var venueToAdd = await _venueRepository.GetVenueIfInDb(eventDTO.Venue.Name, eventDTO.Venue.Address);
 
             if (venueToAdd == null) 
             {
