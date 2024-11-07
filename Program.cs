@@ -95,6 +95,8 @@ namespace EventVault
 
             // Services & repositories events
             builder.Services.AddHttpClient();
+            builder.Services.AddScoped<IVenueRepository, VenueRepository>();
+            builder.Services.AddScoped<IVenueServices, VenueServices>();
             builder.Services.AddScoped<IEventRepository, EventRepository>();
             builder.Services.AddScoped<IEventServices, EventServices>();
             builder.Services.AddScoped<IKBEventServices, KBEventServices>();

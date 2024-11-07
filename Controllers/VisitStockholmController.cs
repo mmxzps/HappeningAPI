@@ -11,7 +11,7 @@ namespace EventVault.Controllers
     {
         private readonly IVisitStockholmServices _visitStockholmServices;
         private readonly string _baseUrl = "https://www.visitstockholm.se/api/v1";
-        private string result;
+        //private string result;
 
         public VisitStockholmController(IVisitStockholmServices visitStockholmServices) {
             _visitStockholmServices = visitStockholmServices;

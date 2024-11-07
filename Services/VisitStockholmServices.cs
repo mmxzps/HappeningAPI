@@ -66,8 +66,9 @@ namespace EventVault.Services
                                              DateTimeStyles.None,
                                              out DateTime parsedDate);
 
+                        string[] formats = { "h\\:mm", "hh\\:mm", "h\\:mm\\:ss", "hh\\:mm\\:ss" };
                         // Parse time
-                        bool timeParsed = TimeSpan.TryParseExact(vsEvent.StartTime, "hh\\:mm",
+                        bool timeParsed = TimeSpan.TryParseExact(vsEvent.StartTime, formats,
                                                                  CultureInfo.InvariantCulture,
                                                                  out TimeSpan parsedTime);
 
