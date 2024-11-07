@@ -48,6 +48,21 @@ namespace EventVault.Services
                     ZipCode = venueById.ZipCode,
                     LocationLat = venueById.LocationLat,
                     LocationLong = venueById.LocationLong,
+                    Events = venueById.Events?.Select(e => new EventGetDTO
+                    {
+                        Id = e.Id,
+                        EventId = e.EventId,
+                        Category = e.Category,
+                        Title = e.Title,
+                        Description = e.Description,
+                        ImageUrl = e.ImageUrl,
+                        APIEventUrlPage = e.APIEventUrlPage,
+                        EventUrlPage = e.EventUrlPage,
+                        Date = e.Date,
+                        TicketsRelease = e.TicketsRelease,
+                        HighestPrice = e.HighestPrice,
+                        LowestPrice = e.LowestPrice
+                    }).ToList() ?? new List<EventGetDTO>()
                 };
 
                 return venue;

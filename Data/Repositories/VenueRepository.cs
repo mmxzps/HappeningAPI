@@ -26,7 +26,9 @@ namespace EventVault.Data.Repositories
 
         public async Task<Venue> GetVenueAsync (int? id)
         {
-            var venue = await _context.Venues.Include(v => v.Events).Where(v => v.Id == id).FirstOrDefaultAsync();
+            var venue = await _context.Venues
+                .Include(v => v.Events)
+                .Where(v => v.Id == id).FirstOrDefaultAsync();
 
             return venue;
         }

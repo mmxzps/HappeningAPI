@@ -40,7 +40,7 @@ namespace EventVault.Controllers
 
             if (venueById != null)
             {
-                return Ok($"{venueById}");
+                return Ok(venueById);
             }
 
             else
