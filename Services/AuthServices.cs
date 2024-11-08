@@ -54,7 +54,7 @@ namespace EventVault.Services
             return (User) await _userManager.FindByEmailAsync(email);
         }
 
-        public async Task<string> GenerateToken(IdentityUser user)
+        public async Task<string> GenerateToken(User user)
         {
             var claims = new List<Claim>
             {
