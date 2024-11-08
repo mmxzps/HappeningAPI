@@ -12,10 +12,10 @@ namespace EventVault.Services
 {
     public class AuthServices : IAuthServices
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AuthServices(UserManager<User> userManager, IConfiguration configuration)
+        public AuthServices(UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -44,7 +44,7 @@ namespace EventVault.Services
             return await _userManager.CheckPasswordAsync(identityUser, loginDTO.Password);
         }
 
-        public async Task<User> GetUserByUsernameAsync(string username)
+        public async Task<IdentityUser> GetUserByUsernameAsync(string username)
         {
             return await _userManager.FindByNameAsync(username);
         }

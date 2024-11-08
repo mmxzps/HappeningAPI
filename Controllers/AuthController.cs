@@ -22,7 +22,7 @@ namespace EventVault.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public AuthController(IAuthServices authServices, IRoleServices roleServices, IEmailSender emailSender, UserManager<User> userManager)
+        public AuthController(IAuthServices authServices, IRoleServices roleServices, IEmailSender emailSender, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, EmailService emailService)
         {
             _authServices = authServices;
             _roleServices = roleServices;

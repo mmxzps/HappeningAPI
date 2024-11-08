@@ -51,10 +51,6 @@ namespace EventVault
             //        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             //    });
             //});
-
-            // Configure SMTP settings
-            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-            builder.Services.AddTransient<IEmailSender, EmailSender>();
           
             // Identity framework
             builder.Services.AddAuthorization();
@@ -154,7 +150,7 @@ namespace EventVault
             var app = builder.Build();
 
             // Use CorsPolicy set above ^.
-            app.UseCors("LocalReact")
+            app.UseCors("LocalReact");
 
             using (var scope = app.Services.CreateScope())
             {
