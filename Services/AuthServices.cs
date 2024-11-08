@@ -44,14 +44,14 @@ namespace EventVault.Services
             return await _userManager.CheckPasswordAsync(identityUser, loginDTO.Password);
         }
 
-        public async Task<IdentityUser> GetUserByUsernameAsync(string username)
+        public async Task<User> GetUserByUsernameAsync(string username)
         {
-            return await _userManager.FindByNameAsync(username);
+            return (User) await _userManager.FindByNameAsync(username);
         }
 
-        public async Task<IdentityUser> GetUserByEmailAsync(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            return await _userManager.FindByEmailAsync(email);
+            return (User) await _userManager.FindByEmailAsync(email);
         }
 
         public async Task<string> GenerateToken(IdentityUser user)
