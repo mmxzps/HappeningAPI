@@ -13,6 +13,8 @@ using DotNetEnv;
 using EventVault.Models;
 using EventVault.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Azure.Communication.Email;
+using Sprache;
 
 namespace EventVault
 {
@@ -27,7 +29,6 @@ namespace EventVault
             // Add services to the container.
             builder.Services.AddDbContext<EventVaultDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
-
 
             //CORS-Policy
             builder.Services.AddCors(options =>
@@ -50,16 +51,10 @@ namespace EventVault
             //        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             //    });
             //});
-
-            // Configure SMTP settings
-            // (The correct one) :)
-            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-            builder.Services.AddTransient<IEmailSender, EmailSender>();
-
-
+          
             // Identity framework
             builder.Services.AddAuthorization();
-            builder.Services.AddIdentity<User, IdentityRole>()
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<EventVaultDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -85,38 +80,76 @@ namespace EventVault
                     ValidAudience = jwtAudience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
                 };
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+                options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_SECRET");
+                options.CallbackPath = "/signin-google";
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
+            });
+
+            builder.Services.AddScoped(options =>
+            {
+                var azureConnectionString = Environment.GetEnvironmentVariable("AZURE_CONNECTION_STRING");
+
+                return new EmailClient(azureConnectionString);
+            });
+
+            // Adding MVC client
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowClientMVC", policy =>
+                {
+                    policy.WithOrigins("https://localhost:7175/")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
             });
 
             // Other services
-            builder.Services.AddControllers();
-          
+            builder.Services.AddControllers();         
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
-            // Services & repositories events
             builder.Services.AddHttpClient();
-            builder.Services.AddScoped<IVenueRepository, VenueRepository>();
-            builder.Services.AddScoped<IVenueServices, VenueServices>();
-            builder.Services.AddScoped<IEventRepository, EventRepository>();
-            builder.Services.AddScoped<IEventServices, EventServices>();
-            builder.Services.AddScoped<IKBEventServices, KBEventServices>();
-            builder.Services.AddScoped<IVisitStockholmServices, VisitStockholmServices>();
-            builder.Services.AddScoped<ITicketMasterServices, TicketMasterServices>();
-            builder.Services.AddHttpClient<IEventbriteServices, EventbriteServices>();
 
-            // Services & repositories identity
+          // Event
+          builder.Services.AddScoped<IEventRepository, EventRepository>();
+          builder.Services.AddHttpClient<IEventServices, EventServices>();
+          
+          // KBE
+          builder.Services.AddHttpClient<IKBEventServices, KBEventServices>();
+          
+          // Venue
+          builder.Services.AddScoped<IVenueRepository, VenueRepository>();
+          builder.Services.AddScoped<IVenueServices, VenueServices>();
+          
+          // TicketMaster
+          builder.Services.AddScoped<ITicketMasterServices, TicketMasterServices>();
+          
+          // VisitStockholm
+          builder.Services.AddScoped<IVisitStockholmServices, VisitStockholmServices>();
+                 
+          // Auth (Identity)
             builder.Services.AddTransient<IAuthServices, AuthServices>();
+          
+          // Role (Identity)
             builder.Services.AddTransient<IRoleServices, RoleServices>();
+          
+          // Admin
             builder.Services.AddTransient<IAdminServices, AdminServices>();
+          
+          // Email (Azure)
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
-            // User repo & service
+            // User Repo & Service
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             var app = builder.Build();
 
-
-            // Use corspolicy set above ^.
+            // Use CorsPolicy set above ^.
             app.UseCors("LocalReact");
 
             using (var scope = app.Services.CreateScope())

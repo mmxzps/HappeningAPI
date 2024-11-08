@@ -7,9 +7,10 @@ namespace EventVault.Services.IServices
 {
     public interface IAuthServices
     {
-        Task<string> GenerateToken(User user);
+        Task<string> GenerateToken(IdentityUser user);
         Task<bool> Login(LoginDTO loginDTO);
         Task<IdentityResult> Register(RegisterDTO registerDTO);
-        Task<User> GetUserByUsernameAsync(string username);
+        Task<IdentityUser> GetUserByUsernameAsync(string username);
+        Task<IdentityUser> GetUserByEmailAsync(string email);
     }
 }

@@ -8,20 +8,14 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 
-//TODO:
-
-// Add tracing codes, eg. if user has choosen "dark mode" 
-// Add logic for admin users as well
-// Add "ForgetUserNameOrPassword" method
-
 namespace EventVault.Services
 {
     public class AuthServices : IAuthServices
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AuthServices(UserManager<User> userManager, IConfiguration configuration)
+        public AuthServices(UserManager<IdentityUser> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
@@ -50,12 +44,17 @@ namespace EventVault.Services
             return await _userManager.CheckPasswordAsync(identityUser, loginDTO.Password);
         }
 
-        public async Task<User> GetUserByUsernameAsync(string username)
+        public async Task<IdentityUser> GetUserByUsernameAsync(string username)
         {
             return await _userManager.FindByNameAsync(username);
         }
 
-        public async Task<string> GenerateToken(User user)
+        public async Task<IdentityUser> GetUserByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<string> GenerateToken(IdentityUser user)
         {
             var claims = new List<Claim>
             {
