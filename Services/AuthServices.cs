@@ -12,10 +12,10 @@ namespace EventVault.Services
 {
     public class AuthServices : IAuthServices
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
 
-        public AuthServices(UserManager<IdentityUser> userManager, IConfiguration configuration)
+        public AuthServices(UserManager<User> userManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _configuration = configuration;
