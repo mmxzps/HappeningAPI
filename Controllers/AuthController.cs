@@ -19,10 +19,10 @@ namespace EventVault.Controllers
         private readonly IAuthServices _authServices;
         private readonly IRoleServices _roleServices;
         private readonly IEmailService _emailService;        
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
 
-        public AuthController(IAuthServices authServices, IRoleServices roleServices, IEmailSender emailSender, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, EmailService emailService)
+        public AuthController(IAuthServices authServices, IRoleServices roleServices, IEmailSender emailSender, UserManager<User> userManager, SignInManager<User> signInManager, EmailService emailService)
         {
             _authServices = authServices;
             _roleServices = roleServices;
@@ -53,7 +53,7 @@ namespace EventVault.Controllers
                 return BadRequest("Username is already taken");
             }
 
-            var user = new IdentityUser
+            var user = new User
             {
                 UserName = registerDTO.UserName,
                 Email = registerDTO.Email
@@ -111,7 +111,7 @@ namespace EventVault.Controllers
                 return BadRequest("Email invalid");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, token);
+            var result = await _userManager.ConfirmEmailAsync((User)user, token);
 
             if (!result.Succeeded)
             {
@@ -136,7 +136,7 @@ namespace EventVault.Controllers
                 return BadRequest("User found, but email address is not set.");
             }
 
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var token = await _userManager.GeneratePasswordResetTokenAsync((User)user);
 
             var callbackUrl = Url.Action("ResetPassword", "Auth", new { userId = user.Id, token = token }, Request.Scheme);
 
@@ -203,13 +203,13 @@ namespace EventVault.Controllers
 
             if (user == null)
             {
-                user = new IdentityUser
+                user = new User
                 {
                     Email = email,
                     UserName = email 
                 };
 
-                var createResult = await _userManager.CreateAsync(user);
+                var createResult = await _userManager.CreateAsync((User)user);
                 if (!createResult.Succeeded)
                 {
                     var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));

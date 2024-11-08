@@ -54,7 +54,7 @@ namespace EventVault
           
             // Identity framework
             builder.Services.AddAuthorization();
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            builder.Services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<EventVaultDbContext>()
                 .AddDefaultTokenProviders();
 
