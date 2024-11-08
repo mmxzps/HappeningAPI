@@ -1,5 +1,6 @@
 ﻿using EventVault.Data.Repositories.IRepositories;
 using EventVault.Models;
+using EventVault.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using TicketmasterTesting.Models.TicketMasterModels;
@@ -9,61 +10,70 @@ namespace EventVault.Data.Repositories
     public class EventRepository : IEventRepository
     {
         private readonly EventVaultDbContext _context;
-        private readonly HttpClient _httpClient;
-        private readonly string _ticketMasterApiKey;
-        public EventRepository(EventVaultDbContext context, HttpClient httpClient)
-        {
 
+        public EventRepository(EventVaultDbContext context)
+        {
             _context = context;
-            _httpClient = httpClient;
-            _ticketMasterApiKey = Environment.GetEnvironmentVariable("TicketmasterApiKey");
         }
 
+        //create
+        public async Task AddEventAsync(Event eventToAdd)
+        {
+            await _context.Events.AddAsync(eventToAdd);
+
+            await _context.SaveChangesAsync();
+        }
+
+        //get all events
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
         {
-            var eventList = await _context.Events.ToListAsync() ?? new List<Event>();
-
-            return eventList;
+            return await _context.Events
+                .Include(e => e.Venue)
+                .ToListAsync();
         }
 
-        public async Task<bool> AddEventToDbAsync(Event eventToAdd)
+        //get event by ID
+        public async Task<Event> GetEventAsync(int? id)
         {
-            try
-            {
-                await _context.Events.AddAsync(eventToAdd);
+            var eventById = await _context.Events.Where(e => e.Id == id).FirstOrDefaultAsync();
 
-                await _context.SaveChangesAsync();
-
-                return true;
-            }
-
-            catch (Exception)
-            {
-                return false;
-            }
+            return eventById;
         }
 
-        public async Task<EventHolder> GetEventInCityAsync(string city)
+
+        //update event by Id
+        public async Task UpdateEventAsync(Event eventUpdateDTO)
         {
+            _context.Events.Update(eventUpdateDTO);
 
-            try
+            await _context.SaveChangesAsync();
+        }
+
+        //delete event
+        public async Task DeleteEventAsync(Event eventToDelete)
+        {
+            //find venue of event
+            var venue = await _context.Venues
+                .Include(v => v.Events)
+                .FirstOrDefaultAsync(v => v.Id == eventToDelete.FK_Venue);
+
+
+            //remove event
+            _context.Events.Remove(eventToDelete);
+
+            //if connected venue, remove event from its list of events.
+            if (venue != null)
             {
-                string apiUrl = $"https://app.ticketmaster.com/discovery/v2/events?apikey={_ticketMasterApiKey}&locale=*&city={city}";
-                var apiResponse = await _httpClient.GetAsync(apiUrl);
-
-                apiResponse.EnsureSuccessStatusCode();
-
-                var content = await apiResponse.Content.ReadAsStringAsync();
-                var eventHolder = JsonSerializer.Deserialize<EventHolder>(content);
-
-                return eventHolder;
-
+                venue.Events.Remove(eventToDelete);
             }
-            catch (Exception ex)
+
+            //if its the last event at venue, remove the venue
+            if (venue != null && venue.Events.Count == 0)
             {
-                Console.WriteLine($"Unexpected error: {ex.Message}");
-                throw;
+                _context.Venues.Remove(venue);
             }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

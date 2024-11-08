@@ -30,6 +30,32 @@ namespace EventVault
             builder.Services.AddDbContext<EventVaultDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 
+            //CORS-Policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("LocalReact", policy =>
+                {
+                    //l�gg in localhost reactapp som k�r n�r vi startar react. 
+                    policy.WithOrigins("http://localhost:5174")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
+
+            //Policy som �r mindre s�ker och till�ter vem som helst att ansluta. Om god s�kerhet finns i api med auth, s� kan den h�r anv�ndas.
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddDefaultPolicy(policy =>
+            //    {
+            //        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+            //    });
+            //});
+
+            // Configure SMTP settings
+            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+          
             // Identity framework
             builder.Services.AddAuthorization();
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -90,19 +116,45 @@ namespace EventVault
             builder.Services.AddControllers();         
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddHttpClient();
 
-            // Services & repositories
-            builder.Services.AddScoped<IEventRepository, EventRepository>();
-            builder.Services.AddHttpClient<IEventServices, EventServices>();
-            builder.Services.AddHttpClient<IKBEventServices, KBEventServices>();
-            
+          // Event
+          builder.Services.AddScoped<IEventRepository, EventRepository>();
+          builder.Services.AddHttpClient<IEventServices, EventServices>();
           
+          // KBE
+          builder.Services.AddHttpClient<IKBEventServices, KBEventServices>();
+          
+          // Venue
+          builder.Services.AddScoped<IVenueRepository, VenueRepository>();
+          builder.Services.AddScoped<IVenueServices, VenueServices>();
+          
+          // TicketMaster
+          builder.Services.AddScoped<ITicketMasterServices, TicketMasterServices>();
+          
+          // VisitStockholm
+          builder.Services.AddScoped<IVisitStockholmServices, VisitStockholmServices>();
+                 
+          // Auth (Identity)
             builder.Services.AddTransient<IAuthServices, AuthServices>();
+          
+          // Role (Identity)
             builder.Services.AddTransient<IRoleServices, RoleServices>();
+          
+          // Admin
             builder.Services.AddTransient<IAdminServices, AdminServices>();
+          
+          // Email (Azure)
             builder.Services.AddScoped<IEmailService, EmailService>();
 
+            // User Repo & Service
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
             var app = builder.Build();
+
+            // Use CorsPolicy set above ^.
+            app.UseCors("LocalReact")
 
             using (var scope = app.Services.CreateScope())
             {

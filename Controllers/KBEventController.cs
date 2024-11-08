@@ -1,11 +1,12 @@
-﻿using EventVault.Models.ViewModels;
+﻿using EventVault.Models.DTOs;
+using EventVault.Models.ViewModels;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventVault.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[Controller]API")]
     [ApiController]
     public class KBEventController : ControllerBase
     {
@@ -17,7 +18,7 @@ namespace EventVault.Controllers
         }
             
         [HttpGet]
-        [Route("/getEventList")]
+        [Route("getEventList")]
         public async Task<ActionResult<IEnumerable<KBEventListViewModel>>> GetEventList()
         {
              var eventList = await _services.GetListOfEventsAsync();
@@ -26,8 +27,8 @@ namespace EventVault.Controllers
         }
 
         [HttpGet]
-        [Route("/getEvent")]
-        public async Task<ActionResult<KBEventViewModel>> GetEvent()
+        [Route("getEvents")]
+        public async Task<ActionResult<EventGetDTO>> GetEvent()
         {
             var eventObject = await _services.GetEventDataAsync();
 

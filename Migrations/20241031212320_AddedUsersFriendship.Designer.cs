@@ -4,6 +4,7 @@ using EventVault.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventVault.Migrations
 {
     [DbContext(typeof(EventVaultDbContext))]
-    partial class EventVaultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241031212320_AddedUsersFriendship")]
+    partial class AddedUsersFriendship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,46 +27,38 @@ namespace EventVault.Migrations
 
             modelBuilder.Entity("EventVault.Models.Event", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("APIEventUrlPage")
+                    b.Property<string>("Dates")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EventId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EventUrlPage")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("FK_Venue")
+                    b.Property<int>("FK_Venue")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("HighestPrice")
-                        .HasPrecision(18, 2)
+                    b.Property<decimal>("HighestPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("LowestPrice")
-                        .HasPrecision(18, 2)
+                    b.Property<decimal>("LowestPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("TicketsRelease")
-                        .HasColumnType("datetime2");
+                    b.Property<bool>("RequiresTickets")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TicketsAreAvailable")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -131,12 +126,6 @@ namespace EventVault.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -163,9 +152,6 @@ namespace EventVault.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ProfilePictureUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -191,29 +177,26 @@ namespace EventVault.Migrations
 
             modelBuilder.Entity("EventVault.Models.Venue", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LocationLat")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LocationLong")
+                    b.Property<string>("EventId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ZipCode")
+                    b.Property<string>("Street")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -357,9 +340,10 @@ namespace EventVault.Migrations
             modelBuilder.Entity("EventVault.Models.Event", b =>
                 {
                     b.HasOne("EventVault.Models.Venue", "Venue")
-                        .WithMany("Events")
+                        .WithMany("EventsAtVenue")
                         .HasForeignKey("FK_Venue")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("EventVault.Models.User", null)
                         .WithMany("Events")
@@ -447,7 +431,7 @@ namespace EventVault.Migrations
 
             modelBuilder.Entity("EventVault.Models.Venue", b =>
                 {
-                    b.Navigation("Events");
+                    b.Navigation("EventsAtVenue");
                 });
 #pragma warning restore 612, 618
         }
