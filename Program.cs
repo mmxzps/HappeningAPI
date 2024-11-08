@@ -111,6 +111,10 @@ namespace EventVault
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+            //friendship
+            builder.Services.AddScoped<IFriendshipRepository, FriendshipRepository>();
+            builder.Services.AddScoped<IFriendshipService, FriendshipService>();
+
             var app = builder.Build();
 
 
