@@ -35,5 +35,19 @@ namespace EventVault.Controllers
             await _friendshipService.DeclineFriendRequest(friendshipId);
             return Ok($"Friend request declined!");
         }
+
+        [HttpGet("ShowFriendRequests")]
+        public async Task<IActionResult> ShowFriendRequests(string userId)
+        {
+            var requests = await _friendshipService.ShowFriendshipRequests(userId);
+            return Ok(requests);
+        }
+
+        [HttpGet("ShowAllFriends")]
+        public async Task<IActionResult> ShowAllFriends(string userId)
+        {
+            var allFriends = await _friendshipService.ShowAllFriends(userId);
+            return Ok(allFriends);
+        }
     }
 }
