@@ -1,4 +1,5 @@
-﻿using EventVault.Services;
+﻿using EventVault.Models.DTOs;
+using EventVault.Services;
 using EventVault.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,27 @@ namespace EventVault.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("GetUserById")]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            var theUser = await _userService.GetOneUserByIdAsync(id);
+            return Ok(theUser);
+        }
+
+        [HttpGet("GetUserByUserName")]
+        public async Task<IActionResult> GetUserByUserName(string userName)
+        {
+            var theUser = await _userService.GetOneUserByUserNameAsync(userName);
+            return Ok(theUser);
+        }
+
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(string userId, UserUpdateDTO userUpdateDTO)
+        {
+            await _userService.UpdateUserAsync(userId, userUpdateDTO);
+            return Ok();
         }
     }
 }
