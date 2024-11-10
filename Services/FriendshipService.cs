@@ -51,7 +51,7 @@ namespace EventVault.Services
                 PhoneNumber = x.PhoneNumber,
                 ProfilePictureUrl = x.ProfilePictureUrl,
                 NickName = x.NickName,
-
+                UserName = x.UserName,
             });
         }
     }
