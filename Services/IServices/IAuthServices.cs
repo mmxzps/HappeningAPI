@@ -11,5 +11,6 @@ namespace EventVault.Services.IServices
         Task<bool> Login(LoginDTO loginDTO);
         Task<IdentityResult> Register(RegisterDTO registerDTO);
         Task<User> GetUserByUsernameAsync(string username);
+        Task<User> GetUserByEmailAsync(string email);
     }
 }
