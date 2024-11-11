@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventVault.Migrations
 {
     [DbContext(typeof(EventVaultDbContext))]
-    [Migration("20241111163635_UpdateEventAndVenueFix")]
+    [Migration("20241111174206_UpdateEventAndVenueFix")]
     partial class UpdateEventAndVenueFix
     {
         /// <inheritdoc />

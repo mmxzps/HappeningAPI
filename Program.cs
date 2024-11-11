@@ -116,7 +116,7 @@ namespace EventVault
 
           // Event
           builder.Services.AddScoped<IEventRepository, EventRepository>();
-          builder.Services.AddHttpClient<IEventServices, EventServices>();
+          builder.Services.AddScoped<IEventServices, EventServices>();
           
           // KBE
           builder.Services.AddHttpClient<IKBEventServices, KBEventServices>();
