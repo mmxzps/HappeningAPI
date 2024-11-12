@@ -97,7 +97,7 @@ namespace EventVault.Controllers
             }
 
             var tokenString = await _authServices.GenerateToken(user);
-            return Ok(tokenString);
+            return Ok(new { token = tokenString, userId = user.Id });
         }
 
         [HttpGet]
