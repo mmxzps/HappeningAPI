@@ -48,7 +48,7 @@ namespace EventVault.Data.Repositories
         {
             var friends = await _dbContext.Friendships
                 .Include(x=>x.Friend)
-                .Where(x => x.UserId == userId && x.Status == FriendshipStatus.Accepted)
+                .Where(x =>  x.UserId == userId && x.Status == FriendshipStatus.Accepted || x.FriendId == userId && x.Status == FriendshipStatus.Accepted)
                 .Select(x => x.Friend).ToListAsync();
             return friends;
         }

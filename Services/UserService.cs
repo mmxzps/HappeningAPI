@@ -68,7 +68,6 @@ namespace EventVault.Services
 
             getUser.FirstName = user.FirstName;
             getUser.LastName = user.LastName;
-            getUser.Email = user.Email;
             getUser.PhoneNumber = user.PhoneNumber;
             getUser.NickName = user.NickName;
             getUser.ProfilePictureUrl = user.ProfilePictureUrl;
