@@ -11,5 +11,6 @@ namespace EventVault.Data.Repositories.IRepositories
         Task<Event> GetEventAsync(int? id);
         Task UpdateEventAsync(Event eventToUpdate);
         Task DeleteEventAsync(Event eventToDelete);
+        Task<Event?> GetEventFromDb(EventCreateDTO PossibleEventInDb);
     }
 }

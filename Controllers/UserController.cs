@@ -51,7 +51,7 @@ namespace EventVault.Controllers
 
         }
 
-        public async Task<IActionResult> GetEvent(int userId, int eventId)
+        public async Task<IActionResult> GetSavedEvent(int userId, int eventId)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace EventVault.Controllers
         }
 
         [HttpGet("events")]
-        public async Task<IActionResult> GetAllEvents(int userID)
+        public async Task<IActionResult> GetAllSavedEvents(int userID)
         {
             try
             {
