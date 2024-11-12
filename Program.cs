@@ -36,7 +36,7 @@ namespace EventVault
                 options.AddPolicy("LocalReact", policy =>
                 {
                     //l�gg in localhost reactapp som k�r n�r vi startar react. 
-                    policy.WithOrigins("http://localhost:5174")
+                    policy.WithOrigins("http://localhost:5173")
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
