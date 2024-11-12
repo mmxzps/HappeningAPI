@@ -9,7 +9,6 @@ namespace EventVault.Models
         [Key]
         public int? Id { get; set; }
 
-        public List<Event> Events = new List<Event>();
         public string Name { get; set; }
 
         public string? Address { get; set; }
@@ -21,5 +20,6 @@ namespace EventVault.Models
         public string? LocationLat { get; set; }
 
         public string? LocationLong { get; set; }
+        public List<Event> Events { get; set; } = new List<Event>();
     }
 }

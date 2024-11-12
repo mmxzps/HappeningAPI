@@ -22,14 +22,14 @@ namespace EventVault.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Event>()
-            .HasOne(e => e.Venue)             
-            .WithMany(v => v.Events)           
-            .HasForeignKey(e => e.FK_Venue)    
-            .OnDelete(DeleteBehavior.Cascade); // Cascade delete: deleting a Venue deletes all Events at venue
+                .HasOne(e => e.Venue)             
+                .WithMany(v => v.Events)           
+                .HasForeignKey(e => e.FK_Venue)    
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete: deleting a Venue deletes all Events at venue
 
             builder.Entity<Event>()
-            .Property(e => e.HighestPrice)
-            .HasColumnType("decimal(18,2)");
+                .Property(e => e.HighestPrice)
+                .HasColumnType("decimal(18,2)");
 
             builder.Entity<Event>()
                 .Property(e => e.LowestPrice)
