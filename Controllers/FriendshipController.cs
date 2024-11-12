@@ -16,10 +16,17 @@ namespace EventVault.Controllers
         }
 
         [HttpPost("SendFriendRequest")]
-        public async Task<IActionResult> SendRequest(string userId,  string friendId)
+        public async Task<IActionResult> SendRequest(string userId, string friendId)
         {
-            await _friendshipService.SendFriendRequest(userId, friendId);
-            return Ok($"Request sent!");
+            try
+            {
+                await _friendshipService.SendFriendRequest(userId, friendId);
+                return Ok($"Request sent!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("AcceptFriendRequest")]
