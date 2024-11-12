@@ -55,7 +55,6 @@ namespace EventVault.Data.Repositories
         public async Task<IEnumerable<User>> ShowAllFriends(string userId)
         {
             var friends = await _dbContext.Friendships
-                .Include(x=>x.User)
                 .Include(x=>x.Friend)
                 .Where(x => (x.UserId == userId || x.FriendId == userId) && x.Status == FriendshipStatus.Accepted)
                 .Select(x => x.UserId == userId ? x.Friend : x.User)
