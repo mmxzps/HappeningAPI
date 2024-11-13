@@ -102,7 +102,7 @@ namespace EventVault.Services
         public async Task AddEventToUserAsync(string userId, EventCreateDTO eventCreateDTO)
         {
             // Check if the event already exists in the database
-            var existingEvent = await _eventRepository.GetEventFromDb(eventCreateDTO);
+            var existingEvent = await _eventRepository.GetEventFromDbAsync(eventCreateDTO);
 
             if (existingEvent == null)
             {
@@ -133,14 +133,14 @@ namespace EventVault.Services
             }
 
             // Retrieve the user and add the event to their collection if not already added
-            var user = await _userRepository.GetUser(userId);
+            var user = await _userRepository.GetUserAsync(userId);
             if (user != null && !user.Events.Any(e => e.Title == eventCreateDTO.Title && e.Date == eventCreateDTO.Date && e.Venue.Name == e.Venue.Name))
             {
                 var successfullyAdded = await _eventServices.AddEventAsync(eventCreateDTO);
                 
                 if (successfullyAdded)
                 {
-                    await _userRepository.AddEventToUser(userId, eventCreateDTO);
+                    await _userRepository.AddEventToUserAsync(userId, eventCreateDTO);
                 } 
             }
         }

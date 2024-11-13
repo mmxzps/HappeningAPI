@@ -10,6 +10,14 @@ namespace EventVault.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Remove Columns from Venuetable that aren't in use
+            migrationBuilder.DropColumn(
+                name: "EventId",
+                table: "Venues");
+
+            migrationBuilder.DropColumn(
+                name: "Street",
+                table: "Venues");
 
             // Add missing columns for the Event table
             migrationBuilder.AddColumn<string>(
@@ -37,27 +45,11 @@ namespace EventVault.Migrations
                 table: "Events",
                 nullable: true);
 
-            //migrationBuilder.AddColumn<string>(
-            //    name: "EventUrlPage",
-            //    table: "Events",
-            //    nullable: true);
-
             migrationBuilder.AddColumn<DateTime>(
                 name: "TicketsRelease",
                 table: "Events",
                 nullable: true);
 
-            //migrationBuilder.AddColumn<decimal>(
-            //    name: "HighestPrice",
-            //    table: "Events",
-            //    type: "decimal(18,2)",
-            //    nullable: true);
-
-            //migrationBuilder.AddColumn<decimal>(
-            //    name: "LowestPrice",
-            //    table: "Events",
-            //    type: "decimal(18,2)",
-            //    nullable: true);
 
             migrationBuilder.AddColumn<string>(
                 name: "Address",
@@ -96,7 +88,6 @@ namespace EventVault.Migrations
             migrationBuilder.DropColumn(name: "TicketsRelease", table: "Events");
             migrationBuilder.DropColumn(name: "HighestPrice", table: "Events");
             migrationBuilder.DropColumn(name: "LowestPrice", table: "Events");
-
             migrationBuilder.DropColumn(name: "ZipCode", table: "Venues");
             migrationBuilder.DropColumn(name: "City", table: "Venues");
             migrationBuilder.DropColumn(name: "LocationLat", table: "Venues");

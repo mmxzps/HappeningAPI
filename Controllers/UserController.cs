@@ -32,7 +32,7 @@ namespace EventVault.Controllers
         }
 
 
-        [HttpPost("events")]
+        [HttpPost("/{userId}/event")]
         public async Task<IActionResult> AddEventToUser(EventCreateDTO eventCreateDTO, int userId)
         {
             try
@@ -51,12 +51,13 @@ namespace EventVault.Controllers
 
         }
 
-        public async Task<IActionResult> GetSavedEvent(int userId, int eventId)
+        [HttpGet("/{userId}/event/{eventId}")]
+        public async Task<IActionResult> GetSavedEvent(string userId, int eventId)
         {
             try
             {
                 //get event of user
-                //var event = await _userService.GetUsersEventAsync(userId, eventId);
+                var eventSaved = await _userService.GetSavedEventAsync(userId,eventId);
                 return Ok();
             }
 
@@ -66,13 +67,13 @@ namespace EventVault.Controllers
             }
         }
 
-        [HttpGet("events")]
-        public async Task<IActionResult> GetAllSavedEvents(int userID)
+        [HttpGet("/{userId}/event/")]
+        public async Task<IActionResult> GetAllSavedEvents(string userId)
         {
             try
             {
                 //get list of events
-                //var events = await _userService.GetAllUserEventsAsync(userId);
+                var events = await _userService.GetAllSavedEventsAsync(userId);
 
                 return Ok();
             }
@@ -83,12 +84,13 @@ namespace EventVault.Controllers
             }
         }
 
-        public async Task<IActionResult> DeleteEventFromUser(int userId, int eventId)
+        [HttpDelete("/{userId}/event/{eventId}")]
+        public async Task<IActionResult> DeleteEventFromUser(string userId, int eventId)
         {
             try
             {
                 //remove event from user
-                //await _userService.RemoveEventFromUserAsync(userId, eventId);
+                await _userService.RemoveEventFromUserAsync(userId, eventId);
                 return Ok();
             }
             catch (Exception ex)
