@@ -99,9 +99,6 @@ namespace EventVault.Data.Repositories
 
             await _context.SaveChangesAsync();  
         }
-    }
-}
-
 
         public async Task<User> GetOneUserByIdAsync(string userId)
         {
