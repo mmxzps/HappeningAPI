@@ -75,5 +75,11 @@ namespace EventVault.Data.Repositories
 
             await _context.SaveChangesAsync();
         }
+        
+        public async Task<Event?> GetEventFromDbAsync(EventCreateDTO PossibleEventInDb)
+        {
+            //Returns Event from db if it has same title and date if it's at the same Venue.
+            return await _context.Events.Include(e => e.Venue).FirstOrDefaultAsync(e => e.Title == PossibleEventInDb.Title && e.Date == PossibleEventInDb.Date && e.Venue.Name == PossibleEventInDb.Venue.Name);
+        }
     }
 }
