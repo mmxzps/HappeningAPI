@@ -54,12 +54,12 @@ namespace EventVault.Controllers
 
 
         [HttpPost("/{userId}/event")]
-        public async Task<IActionResult> AddEventToUser(EventCreateDTO eventCreateDTO, int userId)
+        public async Task<IActionResult> AddEventToUser(string userId, EventCreateDTO eventCreateDTO)
         {
             try
             {
                 //add specific event to user
-                //await _userService.AddEventToUser(eventCreateDTO, userId);
+                await _userService.AddEventToUserAsync(userId, eventCreateDTO);
 
                 return Ok(eventCreateDTO);
             }
@@ -77,9 +77,9 @@ namespace EventVault.Controllers
         {
             try
             {
-                //get event of user
-                var eventSaved = await _userService.GetSavedEventAsync(userId,eventId);
-                return Ok();
+                //get event saved to user by Id.
+                var eventSaved = await _userService.GetSavedEventAsync(userId, eventId);
+                return Ok(eventSaved);
             }
 
             catch (Exception ex) 
@@ -93,10 +93,9 @@ namespace EventVault.Controllers
         {
             try
             {
-                //get list of events
+                //get all events saved to user
                 var events = await _userService.GetAllSavedEventsAsync(userId);
-
-                return Ok();
+                return Ok(events);
             }
 
             catch (Exception ex)

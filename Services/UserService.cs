@@ -71,6 +71,11 @@ namespace EventVault.Services
         {
             var eventFromDb = await _userRepository.GetSavedEventAsync(userId, eventId);
 
+            if (eventFromDb == null)
+            {
+                return new EventGetDTO { };
+            }
+
             var eventDTO = new EventGetDTO
             {
                 Id = eventFromDb.Id,
@@ -134,15 +139,14 @@ namespace EventVault.Services
 
             // Retrieve the user and add the event to their collection if not already added
             var user = await _userRepository.GetUserAsync(userId);
-            if (user != null && !user.Events.Any(e => e.Title == eventCreateDTO.Title && e.Date == eventCreateDTO.Date && e.Venue.Name == e.Venue.Name))
+            if (user != null && !user.Events.Any(e => e.Title == eventCreateDTO.Title && e.Date == eventCreateDTO.Date && e.Venue.Name == eventCreateDTO.Venue.Name))
             {
-                var successfullyAdded = await _eventServices.AddEventAsync(eventCreateDTO);
-                
-                if (successfullyAdded)
-                {
-                    await _userRepository.AddEventToUserAsync(userId, eventCreateDTO);
-                } 
+
+                 await _userRepository.AddEventToUserAsync(userId, eventCreateDTO);
+
             }
+
+            Console.WriteLine("added event to user");
         }
 
         public async Task RemoveEventFromUserAsync(string userId, int eventId)
