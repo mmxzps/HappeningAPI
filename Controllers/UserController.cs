@@ -7,7 +7,7 @@ using TicketmasterTesting.Models.TicketMasterModels;
 
 namespace EventVault.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -53,7 +53,7 @@ namespace EventVault.Controllers
         }
 
 
-        [HttpPost("/{userId}/event")]
+        [HttpPost("{userId}/event")]
         public async Task<IActionResult> AddEventToUser(string userId, EventCreateDTO eventCreateDTO)
         {
             try
@@ -72,7 +72,7 @@ namespace EventVault.Controllers
 
         }
 
-        [HttpGet("/{userId}/event/{eventId}")]
+        [HttpGet("{userId}/event/{eventId}")]
         public async Task<IActionResult> GetSavedEvent(string userId, int eventId)
         {
             try
@@ -88,7 +88,7 @@ namespace EventVault.Controllers
             }
         }
 
-        [HttpGet("/{userId}/event/")]
+        [HttpGet("{userId}/event/")]
         public async Task<IActionResult> GetAllSavedEvents(string userId)
         {
             try
@@ -104,7 +104,7 @@ namespace EventVault.Controllers
             }
         }
 
-        [HttpDelete("/{userId}/event/{eventId}")]
+        [HttpDelete("{userId}/event/{eventId}")]
         public async Task<IActionResult> DeleteEventFromUser(string userId, int eventId)
         {
             try
