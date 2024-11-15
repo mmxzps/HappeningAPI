@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace EventVault.Controllers
 {
     [ApiController]
-    [Route("[Controller]")]
+    [Route("api/[Controller]")]
     public class VenueController : Controller
     {
         private readonly IVenueServices _venueServices;

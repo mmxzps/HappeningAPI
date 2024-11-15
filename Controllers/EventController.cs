@@ -10,7 +10,7 @@ using TicketmasterTesting.Models.TicketMasterModels;
 namespace EventVault.Controllers
 {
     [ApiController]
-    [Route("[Controller]")]
+    [Route("api/[Controller]")]
     public class EventController : Controller
     {
         private readonly IEventServices _eventServices;
