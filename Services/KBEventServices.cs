@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace EventVault.Services
 {
@@ -94,7 +95,14 @@ namespace EventVault.Services
                     HighestPrice = eventResponse.price_max,
                     LowestPrice = eventResponse.price_min,
                     EventUrlPage = eventResponse.url_event_page
+                    
                 };
+
+                //adds the first image from the event to eventViewModel
+                if (eventResponse.images != null && eventResponse.images.ContainsKey("0")) 
+                {
+                    eventViewModel.ImageUrl = eventResponse.images["0"];                    
+                }
 
                 //add releasetime of tickets to viewmodel
                 if (eventResponse.unixtime_release != null)
@@ -108,12 +116,6 @@ namespace EventVault.Services
                     eventViewModel.Dates = await ConvertEventDates(eventResponse.dates);
                 }
 
-                //add image to viewmodel
-                if (eventResponse.images != null)
-                {
-                    eventViewModel.ImageUrl = eventResponse.images["0"];
-                }
-
                 //add venue to viewmodel
                 if (eventResponse.locations != null && eventResponse.locations.Any())
                 {
@@ -123,6 +125,18 @@ namespace EventVault.Services
                         Address = eventResponse.locations.First().Value.street,
                         City = eventResponse.locations.First().Value.city,
                     };
+                }
+
+                //clean description of htmltags.
+                if (eventViewModel.Description != null)
+                {
+                    eventViewModel.Description = Regex.Replace(eventViewModel.Description, "<.*?>", string.Empty);
+
+                    eventViewModel.Description = eventViewModel.Description.Replace("&nbsp;", "");
+
+                    eventViewModel.Description = eventViewModel.Description.Replace("&amp;", "&");
+
+                    eventViewModel.Description = eventViewModel.Description.Replace("&quot;", "\"");
                 }
 
                 //add viewmodel to list of viewmodels.

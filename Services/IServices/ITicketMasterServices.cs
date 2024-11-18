@@ -4,6 +4,6 @@ namespace EventVault.Services.IServices
 {
     public interface ITicketMasterServices
     {
-        Task<List<EventViewModel>> GetEventsInCityAsync(string city);
+        Task<IEnumerable<EventViewModel>> GetEventsInCityAsync(string city);
     }
 }
