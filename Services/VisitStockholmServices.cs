@@ -44,10 +44,10 @@ namespace EventVault.Services
                             EventId = vsEvent.Id,
                             Category = string.Join(" ", (from row in vsEvent.EventCategories select row.Slug).ToArray()),
                             Title = vsEvent.Title?.En ?? "No title", // Use English title, if null = "No title"
-                            Description = vsEvent.Description?.En ?? "No description", // English description, if null = "No description"
+                            Description = vsEvent.Description?.En ?? "", // English description, if null = "No description"
                             APIEventUrlPage = vsEvent.Url ?? "",
                             EventUrlPage = vsEvent.ExternalWebsiteUrl ?? "",
-                            ImageUrl = "visitstockholm.se/" + vsEvent.FeaturedImage.Url,
+                            ImageUrl = "visitstockholm.se" + vsEvent.FeaturedImage.Url,
 
                             Venue = new VenueViewModel
                             {

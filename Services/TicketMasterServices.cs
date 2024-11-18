@@ -17,63 +17,49 @@ namespace EventVault.Services
             _ticketMasterApiKey = Environment.GetEnvironmentVariable("TicketmasterApiKey");
         }
 
-        public async Task<List<EventViewModel>> GetEventsInCityAsync(string city)
+        public async Task<IEnumerable<EventViewModel>> GetEventsInCityAsync(string city)
         {
             try
             {
                 var eventHolder = await GetEventInCityAsync(city);
+
                 if (eventHolder == null || eventHolder.Embedded == null || eventHolder.Embedded.Events == null)
                 {
                     throw new Exception("Couldn't find data! Did you spell city name right?");
                 }
-                //var dto = eventHolder.Embedded.Events.Select(x => new ShowEventDTO
-                //{
-                //    EventName = x.Name,
-                //    EventDate = x.Dates.Start.DateTime,
-                //    ImageUrl = x.Images.FirstOrDefault(x => x.Ratio == "3_2").Url,
-                //    TicketPurchaseUrl = x.Url,
-                //    VenueName = x.Embedded?.Venues.FirstOrDefault()?.Name,
-                //    City = x.Embedded.Venues.FirstOrDefault().City.Name,
-                //    Address = x.Embedded?.Venues.FirstOrDefault()?.Address.Line1,
-                //    MinPrice = x.PriceRanges.FirstOrDefault().Min,
-                //    MaxPrice = x.PriceRanges.FirstOrDefault().Max,
-                //    Currency = x.PriceRanges.FirstOrDefault().Currency,
-                //    Category = x.Classifications.FirstOrDefault().Genre.Name,
-                //    SubCategory = x.Classifications.FirstOrDefault().SubGenre.Name,
-                //    AvailabilityStatus = x.Dates.Status.Code,
-                //});
 
-                var eventViewmodel = eventHolder.Embedded.Events.Select(r => new EventViewModel
+                var eventViewmodels = eventHolder.Embedded.Events.Select(r => new EventViewModel
                 {
-                    Title = r.Name,
-                    EventId = r.Id,
-                    Category = r.Classifications.FirstOrDefault().Genre.Name,
+                    Title = r.Name ?? "Unknown Title",
+                    EventId = r.Id ?? "Unknown Id",
+                    Category = r.Classifications != null && r.Classifications
+                    .Any(c => c.Genre != null) ? 
+                    string.Join(", ", r.Classifications.Where(c => c.Segment != null && c.Genre != null).Select(c => c.Segment.Name + " - " + c.Genre.Name))
+                    : "Unknown Genre",
 
+                    Description = "",
                     //need to find description of event
-                    //Description = r....
 
-                    ImageUrl = r.Images.FirstOrDefault(x => x.Ratio == "3_2").Url,
-                    EventUrlPage = r.Url,
-                    LowestPrice = r.PriceRanges.FirstOrDefault().Min,
-                    HighestPrice = r.PriceRanges.FirstOrDefault().Max,
+                    ImageUrl = r.Images?.FirstOrDefault(x => x.Ratio == "3_2")?.Url ?? "",
+                    EventUrlPage = r.Url ?? "",
+                    LowestPrice = r.PriceRanges?.Min(pr => pr.Min) ?? 0,
+                    HighestPrice = r.PriceRanges?.Max(pr => pr.Max) ?? 0,
 
                     Venue = new VenueViewModel
                     {
-                        Name = r.Embedded?.Venues.FirstOrDefault().Name,
-                        City = r.Embedded?.Venues.FirstOrDefault().City.Name,
-                        Address = r.Embedded?.Venues.FirstOrDefault().Address.Line1,
-                        ZipCode = r.Embedded?.Venues.FirstOrDefault().PostalCode,
-                        LocationLat = r.Embedded.Venues.FirstOrDefault().Location.Latitude,
-                        LocationLong = r.Embedded.Venues.FirstOrDefault().Location.Longitude
+                        Name = r.Embedded?.Venues?.FirstOrDefault()?.Name ?? "Unknown Venue",
+                        City = r.Embedded?.Venues?.FirstOrDefault()?.City?.Name ?? "Unknown City",
+                        Address = r.Embedded?.Venues?.FirstOrDefault()?.Address?.Line1 ?? "Unknown Address",
+                        ZipCode = r.Embedded?.Venues?.FirstOrDefault()?.PostalCode ?? "Unknown ZipCode",
+                        LocationLat = r.Embedded?.Venues?.FirstOrDefault()?.Location?.Latitude ?? "0",
+                        LocationLong = r.Embedded?.Venues?.FirstOrDefault()?.Location?.Longitude ?? "0"
                     },
 
                     Dates = r.Dates.Start.DateTime.HasValue ? new List<DateTime> { r.Dates.Start.DateTime.Value } : new List<DateTime>()
 
-                });
+                }).ToList();
 
-                Console.WriteLine("Datetimevalue : " + eventViewmodel.First().Dates[0]);
-
-                return eventViewmodel.ToList();
+                return eventViewmodels;
 
             }
             catch (Exception ex)
