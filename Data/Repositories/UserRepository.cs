@@ -122,18 +122,6 @@ namespace EventVault.Data.Repositories
 
         public async Task UpdateUserAsync(User user)
         {
-            //var fetchedUser = await _userManager.Users.SingleOrDefaultAsync(x => x.Id == userId);
-            //if (fetchedUser == null)
-            //{
-            //    throw new KeyNotFoundException($"User with id:{userId} wasnt found!");
-
-            //}
-            //fetchedUser.FirstName = user.FirstName;
-            //fetchedUser.LastName = user.LastName;
-            //fetchedUser.Email = user.Email;
-            //fetchedUser.PhoneNumber = user.PhoneNumber;
-            //fetchedUser.ProfilePictureUrl = user.ProfilePictureUrl;
-            //fetchedUser.NickName = user.NickName;
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
