@@ -47,7 +47,7 @@ namespace EventVault.Services
                             Description = vsEvent.Description?.En ?? "", // English description, if null = "No description"
                             APIEventUrlPage = vsEvent.Url ?? "",
                             EventUrlPage = vsEvent.ExternalWebsiteUrl ?? "",
-                            ImageUrl = "visitstockholm.se" + vsEvent.FeaturedImage.Url,
+                            ImageUrl = "https://www.visitstockholm.se" + vsEvent.FeaturedImage.Url,
 
                             Venue = new VenueViewModel
                             {
