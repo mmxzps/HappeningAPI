@@ -14,11 +14,13 @@ namespace EventVault.Services
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IRoleServices _roleServices;
 
-        public AuthServices(UserManager<User> userManager, IConfiguration configuration)
+        public AuthServices(UserManager<User> userManager, IConfiguration configuration, IRoleServices roleServices)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _roleServices = roleServices;
         }
 
         public async Task<IdentityResult> Register(RegisterDTO registerDTO)
@@ -29,7 +31,14 @@ namespace EventVault.Services
                 Email = registerDTO.Email
             };
 
-            return await _userManager.CreateAsync(identityUser, registerDTO.Password);
+            var result = await _userManager.CreateAsync(identityUser, registerDTO.Password);
+
+            if (result.Succeeded)
+            {
+                await _roleServices.AssignRoleBasedOnUsernameAsync(identityUser);
+            }
+
+            return result;
         }
 
         public async Task<bool> Login(LoginDTO loginDTO)
