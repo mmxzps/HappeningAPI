@@ -196,7 +196,7 @@ namespace EventVault.Services
             getUser.LastName = user.LastName;
             getUser.PhoneNumber = user.PhoneNumber;
             getUser.NickName = user.NickName;
-            getUser.ProfilePictureUrl = user.ProfilePictureUrl;
+            //getUser.ProfilePictureUrl = user.ProfilePictureUrl;
 
             await _userRepository.UpdateUserAsync(getUser);
         }
