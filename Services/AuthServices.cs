@@ -35,8 +35,6 @@ namespace EventVault.Services
 
             if (result.Succeeded)
             {
-                await _roleServices.InitalizeRolesAsync();
-
                 await _roleServices.AssignRoleBasedOnUsernameAsync(identityUser);
             }
 
