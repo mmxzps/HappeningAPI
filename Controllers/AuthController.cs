@@ -220,6 +220,5 @@ namespace EventVault.Controllers
             var token = await _authServices.GenerateToken(user);
             return Ok(new { token });
         }
-
     }
 }
