@@ -63,6 +63,8 @@ namespace EventVault.Controllers
 
             if (result.Succeeded)
             {
+                await _roleServices.AssignRoleBasedOnUsernameAsync(user);
+
                 var emailConfirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var callbackUrl = Url.Action("ConfirmEmail", "Auth", new { token = emailConfirmToken, email = user.Email }, Request.Scheme);
                 
@@ -220,6 +222,5 @@ namespace EventVault.Controllers
             var token = await _authServices.GenerateToken(user);
             return Ok(new { token });
         }
-
     }
 }
