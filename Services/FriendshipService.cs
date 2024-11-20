@@ -45,6 +45,7 @@ namespace EventVault.Services
 
             return allFriends.Select(x => new UserGetAllDTO
             {
+                Id = x.Id,
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 Email = x.Email,
