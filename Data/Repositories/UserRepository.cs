@@ -57,6 +57,11 @@ namespace EventVault.Data.Repositories
                 .ThenInclude(e => e.Venue)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
+            if (userWithEvents == null)
+            {
+                return null;
+            }
+
             return userWithEvents.Events;
         }
 
