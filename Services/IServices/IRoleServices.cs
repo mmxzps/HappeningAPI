@@ -7,5 +7,6 @@ namespace EventVault.Services.IServices
     {
         Task InitalizeRolesAsync();
         Task AssignRoleBasedOnUsernameAsync(User user);
+        Task AssignRoleGoogleAsync(User user, string roleName);
     }
 }

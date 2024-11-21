@@ -45,5 +45,20 @@ namespace EventVault.Services
                 await _userManager.AddToRoleAsync(user, "User");
             }
         }
+
+        public async Task AssignRoleGoogleAsync(User user, string roleName)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains(roleName))
+            {
+                return; 
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (!result.Succeeded)
+            {
+                throw new System.Exception($"Failed to assign role '{roleName}' to user {user.UserName}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+            }
+        }
     }
 }

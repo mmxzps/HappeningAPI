@@ -217,10 +217,12 @@ namespace EventVault.Controllers
                     var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
                     return BadRequest($"Could not create user in the database: {errors}");
                 }
+
+                await _roleServices.AssignRoleGoogleAsync(user, "User");
             }
 
-            var token = await _authServices.GenerateToken(user);
-            return Ok(new { token });
+            var tokenString = await _authServices.GenerateToken(user);
+            return Ok(new { token = tokenString, userId = user.Id });
         }
     }
 }
