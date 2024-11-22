@@ -174,6 +174,7 @@ namespace EventVault.Controllers
             var redirectUrl = Url.Action("GoogleResponse", "Auth");
 
             var props = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            props.Items["prompt"] = "select_account";
 
             return new ChallengeResult("Google", props);
         }
@@ -223,6 +224,14 @@ namespace EventVault.Controllers
 
             var tokenString = await _authServices.GenerateToken(user);
             return Ok(new { token = tokenString, userId = user.Id });
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok("User logged out successfully.");
         }
     }
 }
