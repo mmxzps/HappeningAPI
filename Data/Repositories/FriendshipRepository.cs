@@ -64,7 +64,10 @@ namespace EventVault.Data.Repositories
 
         public async Task<IEnumerable<Friendship>> ShowFriendshipRequests(string userId)
         {
-            var requests = await _dbContext.Friendships.Where(x => x.FriendId == userId && x.Status == FriendshipStatus.Pending).ToListAsync();
+            var requests = await _dbContext.Friendships
+                .Where(x => x.FriendId == userId && x.Status == FriendshipStatus.Pending)
+                .Include(f=>f.Friend)
+                .Include(f=>f.User).ToListAsync();
 
             return requests;
         }

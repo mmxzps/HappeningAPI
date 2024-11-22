@@ -34,9 +34,32 @@ namespace EventVault.Services
             {
                 Id = x.Id,
                 UserId = x.UserId,
+                User = new UserGetAllDTO
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    NickName = x.User.NickName,
+                    UserName = x.User.UserName,
+                    Email = x.User.Email,
+                    PhoneNumber = x.User.PhoneNumber,
+                    ProfilePictureUrl = x.User.ProfilePictureUrl
+                },
                 FriendId = x.FriendId,
+                Friend = new UserGetAllDTO
+                {
+                    Id = x.Friend.Id,
+                    FirstName = x.Friend.FirstName,
+                    LastName = x.Friend.LastName,
+                    NickName = x.Friend.NickName,
+                    UserName = x.Friend.UserName,
+                    Email = x.Friend.Email,
+                    PhoneNumber = x.Friend.PhoneNumber,
+                    ProfilePictureUrl = x.Friend.ProfilePictureUrl
+                },
                 CreatedDate = x.CreatedDate,
             });
+
         }
 
         public async Task<IEnumerable<UserGetAllDTO>> ShowAllFriends(string userId)
