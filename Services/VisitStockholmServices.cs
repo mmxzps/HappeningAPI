@@ -51,10 +51,10 @@ namespace EventVault.Services
 
                             Venue = new VenueViewModel
                             {
-                                Name = vsEvent.VenueName,
-                                Address = vsEvent.Address,
-                                City = vsEvent.City,
-                                ZipCode = vsEvent.ZipCode
+                                Name = vsEvent.VenueName ?? "",
+                                Address = vsEvent.Address ?? "",
+                                City = vsEvent.City ?? "",
+                                ZipCode = vsEvent.ZipCode ?? ""
                             }
                         };
 

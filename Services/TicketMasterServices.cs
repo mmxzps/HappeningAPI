@@ -47,12 +47,12 @@ namespace EventVault.Services
 
                     Venue = new VenueViewModel
                     {
-                        Name = r.Embedded?.Venues?.FirstOrDefault()?.Name ?? "Unknown Venue",
-                        City = r.Embedded?.Venues?.FirstOrDefault()?.City?.Name ?? "Unknown City",
-                        Address = r.Embedded?.Venues?.FirstOrDefault()?.Address?.Line1 ?? "Unknown Address",
-                        ZipCode = r.Embedded?.Venues?.FirstOrDefault()?.PostalCode ?? "Unknown ZipCode",
-                        LocationLat = r.Embedded?.Venues?.FirstOrDefault()?.Location?.Latitude ?? "0",
-                        LocationLong = r.Embedded?.Venues?.FirstOrDefault()?.Location?.Longitude ?? "0"
+                        Name = r.Embedded?.Venues?.FirstOrDefault()?.Name ?? "",
+                        City = r.Embedded?.Venues?.FirstOrDefault()?.City?.Name ?? "",
+                        Address = r.Embedded?.Venues?.FirstOrDefault()?.Address?.Line1 ?? "",
+                        ZipCode = r.Embedded?.Venues?.FirstOrDefault()?.PostalCode ?? "",
+                        LocationLat = r.Embedded?.Venues?.FirstOrDefault()?.Location?.Latitude ?? "",
+                        LocationLong = r.Embedded?.Venues?.FirstOrDefault()?.Location?.Longitude ?? ""
                     },
 
                     Dates = r.Dates.Start.DateTime.HasValue ? new List<DateTime> { r.Dates.Start.DateTime.Value } : new List<DateTime>()
