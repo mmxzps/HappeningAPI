@@ -3,6 +3,7 @@ using EventVault.Models;
 using EventVault.Models.DTOs;
 using EventVault.Models.ViewModels;
 using EventVault.Services.IServices;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -89,19 +90,19 @@ namespace EventVault.Services
             {
                 var eventViewModel = new EventViewModel()
                 {
-                    EventId = eventResponse.organizer.organizer_id.ToString(),
-                    Title = eventResponse.title,
-                    Description = eventResponse.presentation_short,
+                    EventId = eventResponse.organizer.organizer_id.ToString() ?? "",
+                    Title = eventResponse.title ?? "",
+                    Description = eventResponse.presentation_short ?? "",
                     HighestPrice = eventResponse.price_max,
                     LowestPrice = eventResponse.price_min,
-                    EventUrlPage = eventResponse.url_event_page
+                    EventUrlPage = eventResponse.url_event_page ?? ""
                     
                 };
 
                 //adds the first image from the event to eventViewModel
                 if (eventResponse.images != null && eventResponse.images.ContainsKey("0")) 
                 {
-                    eventViewModel.ImageUrl = eventResponse.images["0"];                    
+                    eventViewModel.ImageUrl = eventResponse.images["0"] ?? "";                    
                 }
 
                 //add releasetime of tickets to viewmodel
@@ -128,7 +129,7 @@ namespace EventVault.Services
                 }
 
                 //clean description of htmltags.
-                if (eventViewModel.Description != null)
+                if (!eventViewModel.Description.IsNullOrEmpty())
                 {
                     eventViewModel.Description = Regex.Replace(eventViewModel.Description, "<.*?>", string.Empty);
 

@@ -42,12 +42,12 @@ namespace EventVault.Services
                         {
 
                             EventId = vsEvent.Id,
-                            Category = string.Join(" ", (from row in vsEvent.EventCategories select row.Slug).ToArray()),
-                            Title = vsEvent.Title?.En ?? "No title", // Use English title, if null = "No title"
+                            Category = string.Join(" ", (from row in vsEvent.EventCategories select row.Slug).ToArray()) ?? "",
+                            Title = vsEvent.Title?.En ?? "", // Use English title, if null = "No title"
                             Description = vsEvent.Description?.En ?? "", // English description, if null = "No description"
                             APIEventUrlPage = vsEvent.Url ?? "",
                             EventUrlPage = vsEvent.ExternalWebsiteUrl ?? "",
-                            ImageUrl = "https://www.visitstockholm.se" + vsEvent.FeaturedImage.Url,
+                            ImageUrl = "",
 
                             Venue = new VenueViewModel
                             {
@@ -57,6 +57,12 @@ namespace EventVault.Services
                                 ZipCode = vsEvent.ZipCode ?? ""
                             }
                         };
+
+                        
+                        if (vsEvent.FeaturedImage.Url != null)
+                        {
+                            eventViewModel.ImageUrl = "https://www.visitstockholm.se" + vsEvent.FeaturedImage.Url;
+                        }
 
                         // Parse date
                         bool dateParsed = DateTime.TryParseExact(vsEvent.StartDate, "yyyy-MM-dd",

@@ -30,12 +30,12 @@ namespace EventVault.Services
 
                 var eventViewmodels = eventHolder.Embedded.Events.Select(r => new EventViewModel
                 {
-                    Title = r.Name ?? "Unknown Title",
-                    EventId = r.Id ?? "Unknown Id",
+                    Title = r.Name ?? "",
+                    EventId = r.Id ?? "",
                     Category = r.Classifications != null && r.Classifications
                     .Any(c => c.Genre != null) ? 
                     string.Join(", ", r.Classifications.Where(c => c.Segment != null && c.Genre != null).Select(c => c.Segment.Name + " - " + c.Genre.Name))
-                    : "Unknown Genre",
+                    : "",
 
                     Description = "",
                     //need to find description of event
