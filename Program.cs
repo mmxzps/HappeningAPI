@@ -26,9 +26,11 @@ namespace EventVault
 
             var builder = WebApplication.CreateBuilder(args);
 
+            var azureConnectionString = Environment.GetEnvironmentVariable("AzureConnection");
+
             // Add services to the container.
             builder.Services.AddDbContext<EventVaultDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
+                options.UseSqlServer(azureConnectionString));
 
             //CORS-Policy
             builder.Services.AddCors(options =>
