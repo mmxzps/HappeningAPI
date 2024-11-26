@@ -319,6 +319,35 @@ Returns a list of friends by user id.
 ### GET - /KBEventAPI/getEventList
 Returns a list of events from KBEvents.
 
+Response example:
+[
+  {
+    "id": 0,
+    "eventId": "string",
+    "category": "string",
+    "title": "string",
+    "description": "string",
+    "imageUrl": "string",
+    "apiEventUrlPage": "string",
+    "eventUrlPage": "string",
+    "dates": [
+      "2024-11-26T23:20:41.856Z"
+    ],
+    "ticketsRelease": "2024-11-26T23:20:41.856Z",
+    "highestPrice": 0,
+    "lowestPrice": 0,
+    "venue": {
+      "id": 0,
+      "name": "string",
+      "address": "string",
+      "city": "string",
+      "zipCode": "string",
+      "locationLat": "string",
+      "locationLong": "string"
+    }
+  }
+]
+
 ### GET - /KBEventAPI/getEvents
 Returns a list of Ids of events at kbevents API
 
@@ -328,6 +357,33 @@ Returns a list of Ids of events at kbevents API
 Gets a list of 250 events from Ticketmaster containing upcoming events from todays date in the stockholm area.
 
 response example :
+[
+  {
+    "id": 0,
+    "eventId": "string",
+    "category": "string",
+    "title": "string",
+    "description": "string",
+    "imageUrl": "string",
+    "apiEventUrlPage": "string",
+    "eventUrlPage": "string",
+    "dates": [
+      "2024-11-26T23:20:41.856Z"
+    ],
+    "ticketsRelease": "2024-11-26T23:20:41.856Z",
+    "highestPrice": 0,
+    "lowestPrice": 0,
+    "venue": {
+      "id": 0,
+      "name": "string",
+      "address": "string",
+      "city": "string",
+      "zipCode": "string",
+      "locationLat": "string",
+      "locationLong": "string"
+    }
+  }
+]
 
 ## VisitStockholm
 
@@ -335,3 +391,30 @@ response example :
 Returns a list of upcoming events in the stockholm area from todays date.
 
 response example :  
+[
+  {
+    "id": 0,
+    "eventId": "string",
+    "category": "string",
+    "title": "string",
+    "description": "string",
+    "imageUrl": "string",
+    "apiEventUrlPage": "string",
+    "eventUrlPage": "string",
+    "dates": [
+      "2024-11-26T23:20:41.856Z"
+    ],
+    "ticketsRelease": "2024-11-26T23:20:41.856Z",
+    "highestPrice": 0,
+    "lowestPrice": 0,
+    "venue": {
+      "id": 0,
+      "name": "string",
+      "address": "string",
+      "city": "string",
+      "zipCode": "string",
+      "locationLat": "string",
+      "locationLong": "string"
+    }
+  }
+]
