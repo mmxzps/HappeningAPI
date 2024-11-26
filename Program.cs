@@ -26,12 +26,12 @@ namespace EventVault
 
             var builder = WebApplication.CreateBuilder(args);
 
-            var azureConnectionString = Environment.GetEnvironmentVariable("AzureConnection");
+            var azureConnectionString1 = Environment.GetEnvironmentVariable("AZURE");
 
 
             // Add services to the container.
             builder.Services.AddDbContext<EventVaultDbContext>(options =>
-                options.UseSqlServer(azureConnectionString));
+                options.UseSqlServer(azureConnectionString1));
 
             //builder.Services.AddDbContext<EventVaultDbContext>(options =>
             //    options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
