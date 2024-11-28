@@ -160,6 +160,7 @@ namespace EventVault.Services
 
             var userDTO = new UserShowOneDTO
             {
+                UserId = userWithId.Id,
                 FirstName = userWithId.FirstName,
                 LastName = userWithId.LastName,
                 Email = userWithId.Email,
