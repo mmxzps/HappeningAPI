@@ -44,7 +44,8 @@ namespace EventVault
                     //l�gg in localhost reactapp som k�r n�r vi startar react. 
                             policy.WithOrigins(
             "http://localhost:5173", // För lokal utveckling
-            "https://happeningevent.azurewebsites.net" // Produktionsmiljö
+            "https://happeningevent.azurewebsites.net",
+            "https://gray-coast-0f971de03.5.azurestaticapps.net/"// Produktionsmiljö
         )
                     .AllowAnyHeader()
                     .AllowAnyMethod();
