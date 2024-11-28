@@ -26,11 +26,15 @@ namespace EventVault
 
             var builder = WebApplication.CreateBuilder(args);
 
-            var azureConnectionString = Environment.GetEnvironmentVariable("AzureConnection");
+            var azureConnectionString1 = Environment.GetEnvironmentVariable("AZURE");
+
 
             // Add services to the container.
             builder.Services.AddDbContext<EventVaultDbContext>(options =>
-                options.UseSqlServer(azureConnectionString));
+                options.UseSqlServer(azureConnectionString1));
+
+            //builder.Services.AddDbContext<EventVaultDbContext>(options =>
+            //    options.UseSqlServer(builder.Configuration.GetConnectionString("ApplicationContext")));
 
             //CORS-Policy
             builder.Services.AddCors(options =>
@@ -38,7 +42,11 @@ namespace EventVault
                 options.AddPolicy("LocalReact", policy =>
                 {
                     //l�gg in localhost reactapp som k�r n�r vi startar react. 
-                    policy.WithOrigins("http://localhost:5173")
+                            policy.WithOrigins(
+            "http://localhost:5173", // För lokal utveckling
+            "https://happeningevent.azurewebsites.net",
+            "https://gray-coast-0f971de03.5.azurestaticapps.net"// Produktionsmiljö
+        )
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
